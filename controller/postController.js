@@ -68,7 +68,7 @@ module.exports.updatePost = async (req, res) => {
             return res.status(404).json({ message: "Post not found" });
         }
         
-        res.status(200).json({ message: "Post updated successfully", post: updatedPost });
+        res.status(200).json({ message: "Post updated successfully", post: updatedPost, postId : postId });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

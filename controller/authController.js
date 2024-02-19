@@ -48,6 +48,8 @@ module.exports.login_get = (req, res) => {
     res.render('login');
 }
 
+
+
 module.exports.signup_post = async (req, res) => {
     const {email, password} = req.body;
     
@@ -85,3 +87,19 @@ module.exports.logout_get = (req, res) => {
     res.redirect('/login');
 }
 
+
+module.exports.delete_user = async (req, res) => {
+    const userId = req.params.id; // Assuming you're passing user ID in the URL
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(userId);
+        if (!deletedUser) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
