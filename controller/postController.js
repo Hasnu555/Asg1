@@ -62,13 +62,23 @@ module.exports.updatePost = async (req, res) => {
         const postId = req.params.id;
         const { content } = req.body;
         
-        const updatedPost = await Post.findByIdAndUpdate(postId, { content }, { new: true });
+        // Find the post by ID
+        const post = await Post.findById(postId);
         
-        if (!updatedPost) {
+        // Check if the post exists
+        if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
         
-        res.status(200).json({ message: "Post updated successfully", post: updatedPost, postId : postId });
+        // Check if the current user is the author of the post
+        if (post.author.toString() !== req.user.id) {
+            return res.status(403).json({ message: "You are not authorized to update this post" });
+        }
+        
+        // Update the post content
+        const updatedPost = await Post.findByIdAndUpdate(postId, { content }, { new: true });
+        
+        res.status(200).json({ message: "Post updated successfully", post: updatedPost });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -78,11 +88,21 @@ module.exports.deletePost = async (req, res) => {
     try {
         const postId = req.params.id;
         
-        const deletedPost = await Post.findByIdAndDelete(postId);
+        // Find the post by ID
+        const post = await Post.findById(postId);
         
-        if (!deletedPost) {
+        // Check if the post exists
+        if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
+        
+        // Check if the current user is the author of the post
+        if (post.author.toString() !== req.user.id) {
+            return res.status(403).json({ message: "You are not authorized to delete this post" });
+        }
+        
+        // Delete the post
+        await Post.findByIdAndDelete(postId);
         
         res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
@@ -90,3 +110,67 @@ module.exports.deletePost = async (req, res) => {
     }
 };
 
+
+// Controller function to add a like to a post
+module.exports.likePost = async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const userId = req.user.id; // Assuming you have authentication middleware
+
+        // Find the post by ID
+        const post = await Post.findById(postId);
+
+        // Check if the post exists
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Check if the user has already liked the post
+        if (post.likes.includes(userId)) {
+            return res.status(400).json({ message: "You have already liked this post" });
+        }
+
+        // Add the user's ID to the likes array
+        post.likes.push(userId);
+
+        // Save the updated post
+        await post.save();
+
+        res.status(200).json({ message: "Post liked successfully", post });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Controller function to remove a like from a post
+module.exports.unlikePost = async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const userId = req.user.id; // Assuming you have authentication middleware
+
+        // Find the post by ID
+        const post = await Post.findById(postId);
+
+        // Check if the post exists
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Check if the user has liked the post
+        if (!post.likes.includes(userId)) {
+            return res.status(400).json({ message: "You have not liked this post" });
+        }
+
+        // Remove the user's ID from the likes array
+        post.likes = post.likes.filter(id => id !== userId);
+
+        // Save the updated post
+        await post.save();
+
+        res.status(200).json({ message: "Post unliked successfully", post });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

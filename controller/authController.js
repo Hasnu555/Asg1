@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const jst = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // Corrected import statement
 
 
 
@@ -34,62 +34,59 @@ const handleErrors = (err) => {
     return errors;
 }
 
-const maxAge =3 * 24 * 60 * 60;
+
+// Error handling function remains the same
+
+const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
-    return jst.sign({id}, 'hasan secret', {
+    return jwt.sign({ id }, 'hasan secret', {
         expiresIn: maxAge
-    })
-}
+    });
+};
 
 module.exports.signup_get = (req, res) => {
     res.render('signup');
-}
+};
+
 module.exports.login_get = (req, res) => {
     res.render('login');
-}
-
-
+};
 
 module.exports.signup_post = async (req, res) => {
-    const {email, password} = req.body;
-    
-    try{
-        const user = await User.create({email, password});  
-        const token = createToken(user._id);
-        res.cookie('jwt', token, {httpOnly:true, maxAge: maxAge * 1000});
-        res.status(201).json({user: user._id});
-    }
-    catch(err){
-        const errors =handleErrors(err);
-        res.status(400).json({errors});
-    }
-}
+    const { email, password, name, age } = req.body; // Include 'name' and 'age' from request body
 
+    try {
+        const user = await User.create({ email, password, name, age }); // Include 'name' and 'age'
+        const token = createToken(user._id);
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+        res.status(201).json({ user: user._id });
+    } catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({ errors });
+    }
+};
 
 module.exports.login_post = async (req, res) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
 
-    try{
+    try {
         const user = await User.login(email, password);
         const token = createToken(user._id);
-        res.cookie('jwt', token, {httpOnly:true, maxAge: maxAge * 1000});
-        res.status(200).json({user: user._id});
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+        res.status(200).json({ user: user._id });
+    } catch (err) {
+        const errors = handleErrors(err);
+        res.status(400).json({ errors });
     }
-    catch(err){
-        const errors =handleErrors(err);
-        res.status(400).json({errors});
-    }
-
-}
+};
 
 module.exports.logout_get = (req, res) => {
-    res.cookie('jwt', '', {maxAge: 1});
+    res.cookie('jwt', '', { maxAge: 1 });
     res.redirect('/login');
-}
-
+};
 
 module.exports.delete_user = async (req, res) => {
-    const userId = req.params.id; // Assuming you're passing user ID in the URL
+    const userId = req.params.id;
 
     try {
         const deletedUser = await User.findByIdAndDelete(userId);
@@ -102,4 +99,4 @@ module.exports.delete_user = async (req, res) => {
         console.error(err);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};

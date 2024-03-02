@@ -15,6 +15,15 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please enter a password'],
         minlength: [6, 'Minimum password length is 6 characters']
     },
+    name : {
+        type: String,
+        required: [true, 'Please enter a name']
+
+    },
+    age : {
+        type: Number,
+        required: [true, 'Please enter an age']
+    },
     role: {
         type: String,
         enum: ['user', 'admin', 'moderator'], // Define different roles here
