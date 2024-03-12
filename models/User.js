@@ -15,20 +15,31 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please enter a password'],
         minlength: [6, 'Minimum password length is 6 characters']
     },
-    name : {
+    name: {
         type: String,
         required: [true, 'Please enter a name']
-
     },
-    age : {
+    age: {
         type: Number,
         required: [true, 'Please enter an age']
     },
     role: {
         type: String,
-        enum: ['user', 'admin', 'moderator'], // Define different roles here
+        enum: ['user', 'admin', 'moderator'],
         default: 'user'
-    }
+    },
+    posts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Post' // Reference to the Post model
+        }
+    ],
+    shares: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Post' // Reference to the Post model
+        }
+    ]
 });
 
 // Fire a function before doc saved to db
@@ -55,7 +66,7 @@ userSchema.statics.login = async function (email, password) {
         throw Error('Incorrect password');
     }
     throw Error('Incorrect email');
-}
+};
 
 const User = mongoose.model('User', userSchema);
 
