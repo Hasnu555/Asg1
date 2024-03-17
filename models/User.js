@@ -39,7 +39,20 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Post' // Reference to the Post model
         }
+    ],
+    friends: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    pendingFriendRequests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
     ]
+    
 });
 
 // Fire a function before doc saved to db

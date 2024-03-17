@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const friendRoutes = require('./routes/friendRoutes');
 const cookieParser = require('cookie-parser');
 const { requireAuth, requireAdmin } = require('./middleware/authmiddleware');
 const { checkUser } = require('./middleware/authmiddleware');
@@ -38,3 +39,5 @@ app.use(postRoutes);
 app.use(authRoutes);
 
 app.use(profileRoutes);
+
+app.use(friendRoutes);
