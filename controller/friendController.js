@@ -6,23 +6,20 @@ const friendController = {
         const recipientId = req.params.id;
 
         try {
-            // Find the sender and recipient users
-            const sender = await User.findById(senderId);
-            const recipient = await User.findById(recipientId);
-
             // Check if recipient exists
+            const recipient = await User.findById(recipientId);
             if (!recipient) {
                 return res.status(404).json({ error: 'Recipient user not found' });
             }
 
             // Check if the recipient is already a friend or has a pending friend request
+            const sender = await User.findById(senderId);
             if (sender.friends.includes(recipientId) || sender.pendingFriendRequests.includes(recipientId)) {
                 return res.status(400).json({ error: 'Friend request already sent or recipient is already a friend' });
             }
 
             // Add sender to recipient's pending friend requests
-            recipient.pendingFriendRequests.push(senderId);
-            await recipient.save();
+            await User.findByIdAndUpdate(recipientId, { $push: { pendingFriendRequests: senderId } });
 
             res.status(200).json({ message: 'Friend request sent successfully' });
         } catch (err) {
@@ -36,7 +33,9 @@ const friendController = {
         const friendId = req.params.id;
 
         try {
+            // Find the user accepting the friend request
             const user = await User.findById(userId);
+            // Find the user who sent the friend request
             const friend = await User.findById(friendId);
 
             // Check if friend request exists
@@ -45,14 +44,12 @@ const friendController = {
             }
 
             // Add friend to user's friends list
-            user.friends.push(friendId);
+            await User.findByIdAndUpdate(userId, { $push: { friends: friendId } });
             // Remove friend request from pending requests
-            user.pendingFriendRequests = user.pendingFriendRequests.filter(request => request.toString() !== friendId);
-            await user.save();
+            await User.findByIdAndUpdate(userId, { $pull: { pendingFriendRequests: friendId } });
 
             // Add user to friend's friends list
-            friend.friends.push(userId);
-            await friend.save();
+            await User.findByIdAndUpdate(friendId, { $push: { friends: userId } });
 
             res.status(200).json({ message: 'Friend request accepted successfully' });
         } catch (err) {
@@ -60,6 +57,7 @@ const friendController = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+
 
     rejectFriendRequest: async (req, res) => {
         const userId = req.user.id;
