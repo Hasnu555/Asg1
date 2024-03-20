@@ -28,6 +28,10 @@ const postSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+    ,
+    images: [{ 
+        type: String // Assuming images are stored as URLs
+    }],
 });
 
 

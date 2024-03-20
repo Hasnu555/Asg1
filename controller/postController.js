@@ -1,11 +1,24 @@
 const jwt = require('jsonwebtoken');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const multer = require('multer');
 
 // Controller function to handle creating a new post
 module.exports.createPost = async (req, res) => {
     const token = req.cookies.jwt;
     console.log('Token', token);
+    //added an additional add image function
+    //this will be optional
+    const storage = multer.diskStorage({
+        destination: function(req, file, cb) {
+            cb(null, 'public/uploads/'); 
+        },
+        filename: function(req, file, cb) {
+            cb(null, Date.now() + '-' + file.originalname);
+        }
+    });
+
+    const upload = multer({ storage: storage });
     if (token) {
         jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
             if (err) {
