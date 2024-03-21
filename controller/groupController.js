@@ -43,6 +43,17 @@ const groupController = {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
+    updateGroup: async (req, res) => {
+        const { groupId } = req.params;
+        const { newName, newDescription } = req.body;
+        try {
+            const updatedGroup = await Group.findByIdAndUpdate(groupId, { name: newName, description: newDescription }, { new: true });
+            res.status(200).json({ message: 'Group updated successfully', group: updatedGroup });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 };
 
 module.exports = groupController;

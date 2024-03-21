@@ -5,6 +5,8 @@ const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const groupRoutes = require('./routes/groupRoutes'); 
+const userRoutes = require('./routes/userRoutes');
+
 
 const cookieParser = require('cookie-parser');
 const { requireAuth, requireAdmin } = require('./middleware/authmiddleware');
@@ -35,6 +37,9 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCr
 app.get('*', checkUser);
 app.get('/', (req, res) => res.render('home'));
 // app.get('/social', requireAuth, (req, res) => res.render('social'));
+
+app.use('/users', userRoutes);
+
 
 app.use(postRoutes);
 
