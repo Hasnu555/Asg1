@@ -42,7 +42,7 @@ const groupController = {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
-    }
+    },
     updateGroup: async (req, res) => {
         const { groupId } = req.params;
         const { newName, newDescription } = req.body;
