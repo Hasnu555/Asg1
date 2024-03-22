@@ -4,8 +4,12 @@ const User = require('../models/User');
 const groupController = {
     createGroup: async (req, res) => {
         const { name } = req.body;
+        const userId = req.user.id;
+        const admin = userId;
+
         try {
-            const newGroup = new Group({ name });
+
+            const newGroup = new Group({ name, admin });
             await newGroup.save();
             res.status(201).json({ message: "Group created successfully", group: newGroup });
         } catch (err) {

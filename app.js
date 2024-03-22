@@ -49,4 +49,4 @@ app.use(profileRoutes);
 
 app.use(friendRoutes);
 
-app.use('/groups', groupRoutes);
+app.use(groupRoutes);

@@ -4,9 +4,7 @@ const userController = {
     reportUser: async (req, res) => {
         try {
             const { reportedId, reason } = req.body;
-            const reporterId = req.user.id; // Assuming you're using authentication middleware to set `req.user`
-
-            // Add a report to the reported user's document
+            const reporterId = req.user.id; 
             await User.findByIdAndUpdate(reportedId, {
                 $push: { reports: { reportedBy: reporterId, reason: reason } }
             });
@@ -21,7 +19,6 @@ const userController = {
         try {
             const { userId } = req.params;
             
-            // Set the 'isBlocked' field of the user to true
             await User.findByIdAndUpdate(userId, { isBlocked: true });
 
             res.status(200).json({ message: 'User blocked successfully' });

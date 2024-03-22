@@ -1,25 +1,21 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken'); // Corrected import statement
+const jwt = require('jsonwebtoken'); 
 
 
-
-//handle errors
 const handleErrors = (err) => { 
     console.log(err.message, err.code);
     let errors = {email: '', password: ''};
 
-    //incorrect email
     if(err.message === 'incorrect email'){
         errors.email = 'that email is not registered';
     }
-    //incorrect password
+
     if(err.message === 'incorrect password'){   
         errors.password = 'that password is incorrect';
         password = 'incorrect password';
     }
 
 
-    //duplicate error code
     if(err.code === 11000){
         errors.email = 'that email is already registered';
         return errors;
@@ -35,7 +31,6 @@ const handleErrors = (err) => {
 }
 
 
-// Error handling function remains the same
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
@@ -53,10 +48,10 @@ module.exports.login_get = (req, res) => {
 };
 
 module.exports.signup_post = async (req, res) => {
-    const { email, password, name, age } = req.body; // Include 'name' and 'age' from request body
+    const { email, password, name, age } = req.body; 
 
     try {
-        const user = await User.create({ email, password, name, age }); // Include 'name' and 'age'
+        const user = await User.create({ email, password, name, age }); 
         const token = createToken(user._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
         res.status(201).json({ user: user._id });
