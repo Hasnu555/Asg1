@@ -6,7 +6,7 @@ const profileRoutes = require('./routes/profileRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const groupRoutes = require('./routes/groupRoutes'); 
 const userRoutes = require('./routes/userRoutes');
-
+const messageRoutes = require('./routes/messageRoutes');
 
 const cookieParser = require('cookie-parser');
 const { requireAuth, requireAdmin } = require('./middleware/authmiddleware');
@@ -50,3 +50,5 @@ app.use(profileRoutes);
 app.use(friendRoutes);
 
 app.use(groupRoutes);
+
+app.use('/messages', messageRoutes)
