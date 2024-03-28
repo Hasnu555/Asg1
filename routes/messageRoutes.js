@@ -1,29 +1,38 @@
+// routes/messageRoutes.js
 const express = require('express');
 const router = express.Router();
-const Message = require('../models/Message');
+const { requireAuth } = require('../middleware/authmiddleware');
+const messageController = require('../controller/messageController');
 
-// Get all messages
-router.get('/', async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+router.post('/messages/send-message', requireAuth, async (req, res) => {
+    const { recipientId, content } = req.body;
+    const senderId = req.user.id;
+    const result = await messageController.sendMessage(senderId, recipientId, content);
+    if (result.success) {
+        res.status(200).json({ message: result.message });
+    } else {
+        res.status(500).json({ message: result.message });
+    }
 });
 
-// Create a new message
-router.post('/', async (req, res) => {
-  const message = new Message({
-    content: req.body.content,
-    sender: req.body.sender
-  });
-  try {
-    const newMessage = await message.save();
-    res.status(201).json(newMessage);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+router.get('/messages', requireAuth, async (req, res) => {
+    const userId = req.user.id;
+    const result = await messageController.getConversationIdsForUser(userId);
+    if (result.success) {
+        res.status(200).json({ conversations: result.conversations });
+    } else {
+        res.status(500).json({ message: result.message });
+    }
+});
+
+router.get('/messages/:conversationId', requireAuth, async (req, res) => {
+    const conversationId = req.params.conversationId;
+    const result = await messageController.getMessagesForConversation(conversationId);
+    if (result.success) {
+        res.status(200).json({ messages: result.messages });
+    } else {
+        res.status(500).json({ message: result.message });
+    }
 });
 
 module.exports = router;
