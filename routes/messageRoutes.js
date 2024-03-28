@@ -4,7 +4,7 @@ const router = express.Router();
 const { requireAuth } = require('../middleware/authmiddleware');
 const messageController = require('../controller/messageController');
 
-router.post('/send-message', requireAuth, async (req, res) => {
+router.post('/messages/send-message', requireAuth, async (req, res) => {
     const { recipientId, content } = req.body;
     const senderId = req.user.id;
     const result = await messageController.sendMessage(senderId, recipientId, content);
@@ -15,7 +15,7 @@ router.post('/send-message', requireAuth, async (req, res) => {
     }
 });
 
-router.get('/conversations', requireAuth, async (req, res) => {
+router.get('/messages', requireAuth, async (req, res) => {
     const userId = req.user.id;
     const result = await messageController.getConversationIdsForUser(userId);
     if (result.success) {
