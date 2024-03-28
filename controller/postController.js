@@ -2,14 +2,13 @@ const jwt = require('jsonwebtoken');
 const Post = require('../models/Post');
 const User = require('../models/User');
 const multer = require('multer');
-
 module.exports.createPost = async (req, res) => {
     const token = req.cookies.jwt;
     console.log('Token', token);
 
     const storage = multer.diskStorage({
         destination: function(req, file, cb) {
-            cb(null, 'public/uploads/'); 
+            cb(null, 'public/uploads/');
         },
         filename: function(req, file, cb) {
             cb(null, Date.now() + '-' + file.originalname);
@@ -29,42 +28,53 @@ module.exports.createPost = async (req, res) => {
                 res.locals.user = {
                     id: user.id,
                     email: user.email,
-                    role: user.role 
+                    role: user.role
                 };
-                try 
-                {
-                    const author = decodedToken.id; 
+                try {
+                    const author = decodedToken.id;
                     console.log('User Current', decodedToken.id);
                     const { content } = req.body;
-                    console.log( 'Content', content, ' Author', author);
-                    const newPost = await Post.create({ content, author });
-                    
+                    console.log('Content', content, ' Author', author);
+                    const newPost = await Post.create({ content, author, visibleTo: [author] }); // Only visible to the author initially
+
                     console.log('New Post', newPost);
-                    res.redirect('/social'); 
+                    res.redirect('/social');
                 } catch (error) {
                     res.status(400).json({ message: error.message });
                 }
             }
         });
-    }
-    else {
+    } else {
         res.locals.user = null;
         // next();
     }
-
 };
-
 
 module.exports.showPosts = async (req, res) => {
     try {
-        const posts = await Post.find().populate('author');
-        res.render('social', { posts }); 
+        const token = req.cookies.jwt;
+        jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
+            if (err) {
+                console.log(err.message);
+                res.locals.user = null;
+                next();
+            } else {
+                console.log(decodedToken);
+                let user = await User.findById(decodedToken.id);
+                res.locals.user = {
+                    id: user.id,
+                    email: user.email,
+                    role: user.role
+                };
+                const userFriends = user.friends; // Assuming the user.friends contains the list of friend IDs
+                const posts = await Post.find({ author: { $in: userFriends } }).populate('author');
+                res.render('social', { posts });
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-    
 };
-
 
 module.exports.updatePost = async (req, res) => {
     try {
