@@ -21,7 +21,12 @@ const groupSchema = new mongoose.Schema({
     created_at: {
         type: Date,
         default: Date.now
-    }
+    },
+    //adding the refernce to the post from here
+    posts: [{  
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
 });
 
 module.exports = mongoose.model('Group', groupSchema);

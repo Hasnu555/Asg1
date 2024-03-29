@@ -32,6 +32,10 @@ const postSchema = new mongoose.Schema({
     images: [{ 
         type: String // Assuming images are stored as URLs
     }],
+    group: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Group', // Reference to the Group model
+    }   
 });
 
 

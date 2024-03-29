@@ -23,5 +23,54 @@ router.delete('/social/comments/:commentId', requireAuth, commentController.dele
 router.post('/social/:postId/like', requireAuth, postController.likePost);
 router.delete('/social/:postId/like', requireAuth, postController.unlikePost);
 
+// Routes for creating, retrieving, updating, and deleting posts within a group
+router.get('/groups/:groupId/posts', requireAuth, postController.showPostsInGroup);
+router.post('/groups/:groupId/posts', requireAuth, postController.createPostInGroup);
+router.put('/groups/:groupId/posts/:postId', requireAuth, postController.updatePostInGroup);
+router.delete('/groups/:groupId/posts/:postId', requireAuth, postController.deletePostInGroup);
+
+// Routes for comments on posts within a group
+router.post('/groups/:groupId/posts/:postId/comments', requireAuth, commentController.createCommentInGroup);
+router.get('/groups/:groupId/posts/:postId/comments', requireAuth, commentController.getCommentsByPostIdInGroup);
+router.put('/groups/:groupId/posts/comments/:commentId', requireAuth, commentController.updateCommentInGroup);
+router.delete('/groups/:groupId/posts/comments/:commentId', requireAuth, commentController.deleteCommentInGroup);
+
+// Routes for liking/unliking posts within a group
+router.post('/groups/:groupId/posts/:postId/like', requireAuth, postController.likePostInGroup);
+router.delete('/groups/:groupId/posts/:postId/like', requireAuth, postController.unlikePostInGroup);
+
+// Routes for creating, retrieving, updating, and deleting posts within a group
+router.get('/groups/:groupId/posts', requireAuth, postController.showPostsInGroup);
+router.post('/groups/:groupId/posts', requireAuth, postController.createPostInGroup);
+router.put('/groups/:groupId/posts/:postId', requireAuth, postController.updatePostInGroup);
+router.delete('/groups/:groupId/posts/:postId', requireAuth, postController.deletePostInGroup);
+
+// Routes for comments on posts within a group
+router.post('/groups/:groupId/posts/:postId/comments', requireAuth, commentController.createCommentInGroup);
+router.get('/groups/:groupId/posts/:postId/comments', requireAuth, commentController.getCommentsByPostIdInGroup);
+router.put('/groups/:groupId/posts/comments/:commentId', requireAuth, commentController.updateCommentInGroup);
+router.delete('/groups/:groupId/posts/comments/:commentId', requireAuth, commentController.deleteCommentInGroup);
+
+// Routes for liking/unliking posts within a group
+router.post('/groups/:groupId/posts/:postId/like', requireAuth, postController.likePostInGroup);
+router.delete('/groups/:groupId/posts/:postId/like', requireAuth, postController.unlikePostInGroup);
+
+// Routes for creating, retrieving, updating, and deleting posts within a group
+router.get('/groups/:groupId/posts', requireAuth, postController.showPostsInGroup);
+router.post('/groups/:groupId/posts', requireAuth, postController.createPostInGroup);
+router.put('/groups/:groupId/posts/:postId', requireAuth, postController.updatePostInGroup);
+router.delete('/groups/:groupId/posts/:postId', requireAuth, postController.deletePostInGroup);
+
+// Routes for comments on posts within a group
+router.post('/groups/:groupId/posts/:postId/comments', requireAuth, commentController.createCommentInGroup);
+router.get('/groups/:groupId/posts/:postId/comments', requireAuth, commentController.getCommentsByPostIdInGroup);
+router.put('/groups/:groupId/posts/comments/:commentId', requireAuth, commentController.updateCommentInGroup);
+router.delete('/groups/:groupId/posts/comments/:commentId', requireAuth, commentController.deleteCommentInGroup);
+
+// Routes for liking/unliking posts within a group
+router.post('/groups/:groupId/posts/:postId/like', requireAuth, postController.likePostInGroup);
+router.delete('/groups/:groupId/posts/:postId/like', requireAuth, postController.unlikePostInGroup);
+
+
 
 module.exports = router;

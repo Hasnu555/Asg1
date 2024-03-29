@@ -6,18 +6,19 @@ const groupController = {
         const { name } = req.body;
         const userId = req.user.id;
         const admin = userId;
-
+    
         try {
-
-            const newGroup = new Group({ name, admin });
+            // also make the admin as a member
+            const newGroup = new Group({ name, admin, members: [admin] });
             await newGroup.save();
+            
             res.status(201).json({ message: "Group created successfully", group: newGroup });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
-    },
-
+    }
+    ,
     addUserToGroup: async (req, res) => {
         const { groupId, userId } = req.params;
         try {
@@ -25,7 +26,7 @@ const groupController = {
             if (!group) {
                 return res.status(404).json({ message: 'Group not found' });
             }
-            if (!group.members.includes(userId)) {
+            if (!group.members.map(member => member.toString()).includes(userId)) { // Convert to strings before comparing
                 group.members.push(userId);
                 await group.save();
                 res.status(200).json({ message: "User added to the group successfully", group });
@@ -37,6 +38,34 @@ const groupController = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    
+    updateGroup: async (req, res) => {
+        const { groupId } = req.params;
+        const { newName, newDescription } = req.body;
+        
+        try {
+            const group = await Group.findById(groupId);
+            if (!group) {
+                return res.status(404).json({ message: 'Group not found' });
+            }
+            
+            if (newName !== undefined) {
+                group.name = newName;
+            }
+            
+            if (newDescription !== undefined) {
+                group.description = newDescription;
+            }
+            
+            await group.save();
+            
+            res.status(200).json({ message: 'Group updated successfully', group });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+       
 
     listGroups: async (req, res) => {
         try {
@@ -46,18 +75,35 @@ const groupController = {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
-    },
-    updateGroup: async (req, res) => {
+    }
+
+    ,
+    deleteGroup: async (req, res) => {
         const { groupId } = req.params;
-        const { newName, newDescription } = req.body;
+
         try {
-            const updatedGroup = await Group.findByIdAndUpdate(groupId, { name: newName, description: newDescription }, { new: true });
-            res.status(200).json({ message: 'Group updated successfully', group: updatedGroup });
+            // Find the group by ID
+            const group = await Group.findById(groupId);
+            if (!group) {
+                return res.status(404).json({ message: 'Group not found' });
+            }
+
+            // Check if the current user is the admin of the group
+            const userId = req.user.id;
+            if (group.admin.toString() !== userId) {
+                return res.status(403).json({ message: 'You are not authorized to delete this group' });
+            }
+
+            // Remove the group from the database
+            await group.remove();
+
+            res.status(200).json({ message: 'Group deleted successfully' });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
     }
 };
+
 
 module.exports = groupController;
