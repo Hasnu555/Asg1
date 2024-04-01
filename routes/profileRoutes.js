@@ -4,6 +4,13 @@ const profileController = require('../controller/profileController');
 
 const router = Router();
 
-router.put('/profile/:id', requireAuth, profileController.update_profile);
+router.get('/:userId/posts', requireAuth, profileController.getUserPosts);
+
+router.get('/selfProfile', requireAuth, profileController.getCurrentUserPosts);
+
+router.put('/selfProfile', requireAuth, profileController.updateSelfProfile);
+
+
+router.put('/selfProfile/:id', requireAuth, profileController.update_profile);
 
 module.exports = router;
