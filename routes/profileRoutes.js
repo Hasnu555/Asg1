@@ -10,7 +10,6 @@ router.get('/selfProfile', requireAuth, profileController.getCurrentUserPosts);
 
 router.put('/selfProfile', requireAuth, profileController.updateSelfProfile);
 
-
 router.put('/selfProfile/:id', requireAuth, profileController.update_profile);
 
 module.exports = router;
