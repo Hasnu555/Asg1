@@ -9,19 +9,25 @@ const requireAdmin = (req, res, next) => {
 };
 
 const requireAuth = (req, res, next) => {
-    const token = req.cookies.jwt;
+    const token = req.headers.authorization.split(' ')[1];
+    // console.log(token);
     if (token) {
         jwt.verify(token, 'hasan secret', (err, decodedToken) => {
             if (err) {
+                
                 console.log(err.message);
                 res.redirect('/login');
             } else {
-                console.log(decodedToken);
+                // console.log('Token exists');
+        
+                // console.log(decodedToken);
                 req.user = decodedToken;
+                // console.log("Auth PAssed");
                 next();
             }
         });
     } else {
+        console.log('No token');
         res.redirect('/login');
     }
 };

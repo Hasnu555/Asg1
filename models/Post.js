@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-
-// Define the Post schema
 const postSchema = new mongoose.Schema({
     content: {
         type: String,
@@ -27,22 +25,19 @@ const postSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
-    ,
-    images: [{ 
-        type: String // Assuming images are stored as URLs
-    }],
+    },
+    imagePaths: [{ // Renamed for clarity, assuming multiple images can be uploaded
+        type: String
+    }]
 });
 
-
-//Fire a function before the doc is saved to the database
-postSchema.pre('save', async function(next){
+// Middleware hooks
+postSchema.pre('save', async function(next) {
     console.log('Post about to be saved', this);
     next();
 });
 
-//Fire a function after the doc is saved to the database
-postSchema.post('save', function(doc, next){
+postSchema.post('save', function(doc, next) {
     console.log('Post has been saved', doc);
     next();
 });

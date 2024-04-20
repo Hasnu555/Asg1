@@ -1,78 +1,98 @@
-const jwt = require('jsonwebtoken');
-const Post = require('../models/Post');
-const User = require('../models/User');
 const multer = require('multer');
-module.exports.createPost = async (req, res) => {
-    const token = req.cookies.jwt;
-    console.log('Token', token);
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const Post = require('../models/Post');
 
-    const storage = multer.diskStorage({
-        destination: function(req, file, cb) {
-            cb(null, 'public/uploads/');
-        },
-        filename: function(req, file, cb) {
-            cb(null, Date.now() + '-' + file.originalname);
-        }
-    });
+// Multer configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Define the destination folder for uploaded files
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname); // Define the filename for uploaded files
+    },
+});
 
-    const upload = multer({ storage: storage });
-    if (token) {
-        jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                res.locals.user = null;
-                next();
-            } else {
-                console.log(decodedToken);
-                let user = await User.findById(decodedToken.id);
-                res.locals.user = {
-                    id: user.id,
-                    email: user.email,
-                    role: user.role
-                };
-                try {
-                    const author = decodedToken.id;
-                    console.log('User Current', decodedToken.id);
-                    const { content } = req.body;
-                    console.log('Content', content, ' Author', author);
-                    const newPost = await Post.create({ content, author, visibleTo: [author] }); // Only visible to the author initially
+// Increase the file size limit (default is 1MB)
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // Increase to 10MB or adjust as needed
+});
 
-                    console.log('New Post', newPost);
-                    res.redirect('/social');
-                } catch (error) {
-                    res.status(400).json({ message: error.message });
-                }
-            }
-        });
-    } else {
-        res.locals.user = null;
-        // next();
-    }
-};
-
-module.exports.showPosts = async (req, res) => {
+module.exports.createPost = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt;
+        const token = req.headers.authorization.split(' ')[1];
+        console.log('Token', token);
+
+        if (!token) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
         jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
             if (err) {
                 console.log(err.message);
-                res.locals.user = null;
-                next();
+                return res.status(401).json({ message: 'Unauthorized' });
             } else {
                 console.log(decodedToken);
                 let user = await User.findById(decodedToken.id);
-                res.locals.user = {
-                    id: user.id,
-                    email: user.email,
-                    role: user.role
-                };
-                const userFriends = user.friends; // Assuming the user.friends contains the list of friend IDs
-                const posts = await Post.find({ author: { $in: userFriends } }).populate('author');
-                res.render('social', { posts });
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+
+                const author = decodedToken.id;
+                console.log('User Current', decodedToken.id);
+                const { content } = req.body;
+                console.log('Content', content, ' Author', author);
+
+                // Check if image file exists in the request
+                if (!req.file) {
+                    return res.status(400).json({ message: 'Image file is required' });
+                }
+
+                const image = req.file.path; // Get the path of the uploaded image
+
+                // Create the post including content and image
+                const newPost = await Post.create({ content, author, visibleTo: [author], image });
+                console.log('New Post', newPost);
+                return res.status(201).json({ message: 'Post created successfully', post: newPost });
             }
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
+
+module.exports.showPosts = async (req, res) => {
+    console.log("Show Posts");
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        
+        jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
+            if (err) {
+                console.log(err.message);
+                res.status(401).json({ message: 'Unauthorized' }); // Return unauthorized status if token verification fails
+            } else {
+                console.log(decodedToken);
+                let user = await User.findById(decodedToken.id);
+                const userFriends = user.friends; // Assuming the user.friends contains the list of friend IDs
+                const posts = await Post.find({ author: { $in: userFriends } }).populate('author');
+
+                // Prepare the response data
+                const responseData = posts.map(post => ({
+                    postId: post._id,
+                    content: post.content,
+                    picture: post.picture // Assuming picture is a property of the Post model
+                }));
+
+                res.status(200).json(responseData); // Return the response as JSON
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message }); // Return internal server error if any occurs
     }
 };
 

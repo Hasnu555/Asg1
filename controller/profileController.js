@@ -50,6 +50,8 @@ const profileController = {
         }
     },
     updateSelfProfile : async (req, res) => {
+        console.log(req.user.id);
+        console.log(req.body);
         try {
             const userId = req.user.id;
             const { name, age } = req.body;
@@ -61,6 +63,7 @@ const profileController = {
             const updatedProfile = await User.findByIdAndUpdate(userId, { name, age }, { new: true });
     
             res.json(updatedProfile);
+            console.log('Profile updated successfully');
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
