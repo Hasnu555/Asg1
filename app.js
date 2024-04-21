@@ -1,6 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+
+
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profileRoutes');
@@ -8,6 +13,13 @@ const friendRoutes = require('./routes/friendRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+
+
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 
 
 const cookieParser = require('cookie-parser');
@@ -46,5 +58,6 @@ app.use(authRoutes);
 app.use(profileRoutes);
 app.use(friendRoutes);
 app.use(groupRoutes);
+// app.use('user/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/messages', messageRoutes)

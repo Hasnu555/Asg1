@@ -1,4 +1,6 @@
 const multer = require('multer');
+
+// import cloudinary from "cloudinary";
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Post = require('../models/Post');
@@ -19,48 +21,37 @@ const upload = multer({
     limits: { fileSize: 10 * 1024 * 1024 }, // Increase to 10MB or adjust as needed
 });
 
+
+
 module.exports.createPost = async (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
-        console.log('Token', token);
+        const decodedToken = jwt.verify(token, 'hasan secret');
 
-        if (!token) {
-            return res.status(401).json({ message: 'Unauthorized' });
+        let user = await User.findById(decodedToken.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
-            if (err) {
-                console.log(err.message);
-                return res.status(401).json({ message: 'Unauthorized' });
-            } else {
-                console.log(decodedToken);
-                let user = await User.findById(decodedToken.id);
-                if (!user) {
-                    return res.status(404).json({ message: 'User not found' });
-                }
+        const { content } = req.body;
+        const imageUrl = req.file ? req.file.path : '';  // Path where the image is stored
 
-                const author = decodedToken.id;
-                console.log('User Current', decodedToken.id);
-                const { content } = req.body;
-                console.log('Content', content, ' Author', author);
-
-                // Check if image file exists in the request
-                if (!req.file) {
-                    return res.status(400).json({ message: 'Image file is required' });
-                }
-
-                const image = req.file.path; // Get the path of the uploaded image
-
-                // Create the post including content and image
-                const newPost = await Post.create({ content, author, visibleTo: [author], image });
-                console.log('New Post', newPost);
-                return res.status(201).json({ message: 'Post created successfully', post: newPost });
-            }
+        const newPost = await Post.create({
+            content,
+            author: decodedToken.id,
+            imageUrl  // Save image path to the database
         });
+        console.log("Post created ", newPost);
+
+        res.status(201).json({ message: 'Post created successfully', post: newPost });
     } catch (error) {
         console.error(error);
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
         return res.status(500).json({ message: 'Internal server error' });
     }
+
 };
 
 
@@ -79,16 +70,25 @@ module.exports.showPosts = async (req, res) => {
                 console.log(decodedToken);
                 let user = await User.findById(decodedToken.id);
                 const userFriends = user.friends; // Assuming the user.friends contains the list of friend IDs
-                const posts = await Post.find({ author: { $in: userFriends } }).populate('author');
+                        // In your post fetching logic
+                const posts = await Post.find({ author: { $in: userFriends } })
+                .populate('author')
+                .populate({
+                    path: 'comments',
+                    populate: { 
+                        path: 'author',
+                        // select: 'name image' // Assuming the user schema has a name and image field
+                        }
+                });
 
                 // Prepare the response data
-                const responseData = posts.map(post => ({
-                    postId: post._id,
-                    content: post.content,
-                    picture: post.picture // Assuming picture is a property of the Post model
-                }));
+                // const responseData = posts.map(post => ({
+                //     postId: post._id,
+                //     content: post.content,
+                //     picture: post.picture // Assuming picture is a property of the Post model
+                // }));
 
-                res.status(200).json(responseData); // Return the response as JSON
+                res.status(200).json(posts); // Return the response as JSON
             }
         });
     } catch (error) {
@@ -170,7 +170,7 @@ module.exports.likePost = async (req, res) => {
 module.exports.unlikePost = async (req, res) => {
     try {
         const postId = req.params.postId;
-        const userId = req.user.id; 
+        const userId = req.user.id;
 
         const post = await Post.findById(postId);
 
@@ -182,7 +182,8 @@ module.exports.unlikePost = async (req, res) => {
             return res.status(400).json({ message: "You have not liked this post" });
         }
 
-        post.likes = post.likes.filter(id => id !== userId);
+        // Remove the user's id from the likes array
+        post.likes = post.likes.filter(id => id.toString() !== userId);
 
         await post.save();
 
@@ -192,3 +193,5 @@ module.exports.unlikePost = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+

@@ -9,11 +9,11 @@ const router = Router();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Define the destination folder for uploaded files
+        cb(null, 'uploads/'); // Save to uploads folder
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Define the filename for uploaded files
-    },
+        cb(null, Date.now() + '-' + file.originalname); // Append the date and the original file extension
+    }
 });
 
 // Increase the file size limit (default is 1MB)
@@ -25,7 +25,7 @@ const upload = multer({
 
 // Routes for creating, retrieving, updating, and deleting posts
 router.get('/social',requireAuth, postController.showPosts);
-router.post('/social',upload.single('image'),requireAuth, postController.createPost);
+router.post('/social', upload.single('image'), requireAuth,postController.createPost);
 router.put('/social/:id',requireAuth, postController.updatePost);//user id
 router.delete('/social/:id',requireAuth, postController.deletePost);//user id
 

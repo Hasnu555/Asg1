@@ -9,6 +9,8 @@ const router = express.Router();
 router.post('/report', requireAuth, reportUser);
 router.post('/block/:userId', requireAuth, blockUser);
 
+
+
 router.get('/current-user', async (req, res) => {
     console.log("Pohanch gaye idhr");
     console.log(req.user);

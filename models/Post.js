@@ -10,6 +10,10 @@ const postSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    imageUrl: {
+        type: String, // Store the path or URL of the image
+        default: ''
+    },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
@@ -26,23 +30,7 @@ const postSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    imagePaths: [{ // Renamed for clarity, assuming multiple images can be uploaded
-        type: String
-    }]
 });
 
-// Middleware hooks
-postSchema.pre('save', async function(next) {
-    console.log('Post about to be saved', this);
-    next();
-});
-
-postSchema.post('save', function(doc, next) {
-    console.log('Post has been saved', doc);
-    next();
-});
-
-// Create the Post model
 const Post = mongoose.model('Post', postSchema);
-
 module.exports = Post;
