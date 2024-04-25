@@ -71,23 +71,21 @@ const Home = () => {
             ...post,
             postedBy: post.author._id,
             like: post.likes.map(user => user._id),
-            comment: post.comments.map(comment => ({
+            comments: post.comments.map(comment => ({
+                _id: comment._id,
                 text: comment.content,
                 created: comment.createdAt,
-                postedBy: comment.author,
-                
-            }),
-
-          ),
-          imageUrl: `http://localhost:5000/uploads/${post.imageUrl}` ,
-          imageUrl: `http://localhost:5000/uploads/${post.imageUrl}` ,
-            
+                postedBy: comment.author.name,
+                posterimage:comment.author.imageUrl
+            })),
+            imageUrl: `file:///${post.imageUrl}`
         }));
         setPosts(transformedPosts);
     } catch (error) {
         console.log("ERROR while post-fetching Client => ", error);
     }
 }
+
 
   
 

@@ -4,7 +4,8 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Post = require('../models/Post');
-
+const fs = require('fs');
+const path = require('path');
 // Multer configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -56,45 +57,64 @@ module.exports.createPost = async (req, res, next) => {
 
 
 
-
 module.exports.showPosts = async (req, res) => {
-    console.log("Show Posts");
     try {
         const token = req.headers.authorization.split(' ')[1];
-        
         jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
             if (err) {
-                console.log(err.message);
-                res.status(401).json({ message: 'Unauthorized' }); // Return unauthorized status if token verification fails
+                res.status(401).json({ message: 'Unauthorized' });
             } else {
-                console.log(decodedToken);
-                let user = await User.findById(decodedToken.id);
-                const userFriends = user.friends; // Assuming the user.friends contains the list of friend IDs
-                        // In your post fetching logic
-                const posts = await Post.find({ author: { $in: userFriends } })
-                .populate('author')
-                .populate({
-                    path: 'comments',
-                    populate: { 
-                        path: 'author',
-                        // select: 'name image' // Assuming the user schema has a name and image field
+                const posts = await Post.find({ author: { $in: decodedToken.id } })
+                    .populate('author')
+                    .populate({
+                        path: 'comments',
+                        populate: {
+                            path: 'author',
+                            select: '_id name imageUrl' // Select only necessary fields
                         }
-                });
+                    });
 
-                // Prepare the response data
-                // const responseData = posts.map(post => ({
-                //     postId: post._id,
-                //     content: post.content,
-                //     picture: post.picture // Assuming picture is a property of the Post model
-                // }));
+                // Function to read image as base64
+                const getImageBase64 = async (imagePath) => {
+                    const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                    return `data:image/jpeg;base64,${imageAsBase64}`;
+                };
 
-                res.status(200).json(posts); // Return the response as JSON
+                // Map over posts and comments to add image base64
+                const postsWithImages = await Promise.all(posts.map(async post => {
+                    const postImageBase64 = await getImageBase64(post.imageUrl);
+                    const authorImageBase64 = await getImageBase64(post.author.imageUrl);
+
+                    const commentsWithImages = await Promise.all(post.comments.map(async comment => {
+                        const commentAuthorImageBase64 = await getImageBase64(comment.author.imageUrl);
+                        return {
+                            ...comment._doc,
+                            author: {
+                                ...comment.author._doc,
+                                imageUrl: commentAuthorImageBase64
+                            }
+                        };
+                    }));
+
+                    return {
+                        ...post._doc,
+                        imageBase64: postImageBase64,
+                        author: {
+                            ...post.author._doc,
+                            imageUrl: authorImageBase64
+                        },
+                        comments: commentsWithImages
+                    };
+                }));
+
+                res.status(200).json(postsWithImages);
             }
         });
     } catch (error) {
-        res.status(500).json({ message: error.message }); // Return internal server error if any occurs
+        res.status(500).json({ message: error.message });
     }
 };
+
 
 module.exports.updatePost = async (req, res) => {
     try {

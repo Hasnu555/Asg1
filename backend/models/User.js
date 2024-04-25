@@ -58,7 +58,11 @@ const userSchema = new mongoose.Schema({
         reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         reason: String,
         createdAt: { type: Date, default: Date.now }
-    }]
+    }],
+    imageUrl: {
+        type: String, // Store the path or URL of the image
+        default: ''
+    },
     
 });
 

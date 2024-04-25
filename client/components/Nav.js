@@ -48,9 +48,9 @@ const Nav = () => {
           {/* link for dashboard */}
           <li>
           <Link
-            href="/user/posts"
+            href="/user/dashboard"
             className={`nav-link dropdown-item ${
-              current === "/user/posts" && "active"
+              current === "/user/dashboard" && "active"
             }`}
           >
             Dashboard

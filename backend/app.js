@@ -35,6 +35,7 @@ app.use(cookieParser());
 // View engine
 app.set('view engine', 'ejs');
 
+
 // Database connection
 const dbURI = 'mongodb+srv://hasanjawaid:091200@hasan.mg8eu13.mongodb.net/node-authnode?retryWrites=true';
 

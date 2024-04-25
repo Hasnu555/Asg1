@@ -8,7 +8,8 @@ module.exports.createComment = async (req, res) => {
         const { content } = req.body;
         const postId = req.params.postId;
         const userId = req.user.id;
-
+        
+        
         const post = await Post.findById(postId);
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
@@ -16,10 +17,11 @@ module.exports.createComment = async (req, res) => {
 
         const comment = await Comment.create({ content, author: userId, post: postId });
         
-        post.comments.push(comment._id);
+        post.comments.push(comment);
         await post.save();
 
         res.status(201).json({ message: "Comment created successfully", comment });
+        console.log("Comment created successfully");
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
