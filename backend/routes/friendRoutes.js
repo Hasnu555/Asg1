@@ -4,6 +4,8 @@ const friendController = require('../controller/friendController');
 
 const router = Router();
 
+router.get('/suggested-friends', requireAuth, friendController.getSuggestedFriends);
+
 router.post('/send-friend-request/:id', requireAuth, friendController.sendFriendRequest);
 
 router.post('/accept-friend-request/:id', requireAuth, friendController.acceptFriendRequest);

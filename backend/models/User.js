@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema({
     }],
     imageUrl: {
         type: String, // Store the path or URL of the image
-        default: ''
+        default: "uploads\\1714144990812-kdnfk.jpg"
     },
     
 });

@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "keywords": [],
-  "author": "Yadvendra Shukla",
+  "author": "Hasnu",
   "license": "ISC",
   "dependencies": {
     "antd": "^5.5.0",

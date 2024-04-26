@@ -3,103 +3,76 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal, Avatar } from "antd";
 import Link from "next/link";
-import AuthForm from "../../../components/forms/AuthForm";
+import UpdateForm from "../../../components/forms/UpdateForm";
 import { useRouter } from "next/router";
 import { UserContext } from "../../../context";
 import { LoadingOutlined, CameraOutlined } from "@ant-design/icons";
 
 const ProfileUpdate = () => {
-  // const [username, setUsername] = useState("");
-  // const [about, setAbout] = useState("");
   const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [secret, setSecret] = useState("");
+  const [email, setEmail] = useState("");
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [state, setState] = useContext(UserContext); // Context state
-  //profile image
-  // const [image, setImage] = useState({});
+  const [state, setState] = useContext(UserContext);
+  const [image, setImage] = useState({});
   const [uploading, setUploading] = useState(false);
 
   const router = useRouter();
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token');
 
-
-  // store the value of user using context
   useEffect(() => {
     if (state && state.user) {
-      console.log(state.user.name);
       setName(state.user.name);
       setAge(state.user.age);
-      
+      setEmail(state.user.email);
+      setImage(state.user.image);
     }
   }, [state && state.user]);
 
   const handleSubmit = async (e) => {
-    
     e.preventDefault();
+    setUploading(true);
+
     try {
-      // console.log(name, email, password, secret);
       setLoading(true);
-      const { data } = await axios.put(`http://localhost:5000/selfProfile`, {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('age', age);
+      formData.append('email', email);
+      if (image) formData.append('image', image);
+
+      const { data } = await axios.put(`http://localhost:5000/selfProfile`, formData, {
         headers: {
-          'Authorization': 'Bearer ' + token
-      },
-      
-        // username,
-        // about,
-        name:name,
-        // email,
-        age:age,
-        // password,
-        // secret,
-        // image,
-      
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      console.log("Bhaiiiiiiiiiiiiii")
-      console.log(data);
+
       if (data.error) {
         toast.error(data.error);
         setLoading(false);
       } else {
-        // update local storage, update user, keep token
         let auth = JSON.parse(localStorage.getItem("auth"));
         auth.user = data;
         localStorage.setItem("auth", JSON.stringify(auth));
-        //update contex
         setState({ ...state, user: data });
         setOk(true);
         setLoading(false);
       }
     } catch (err) {
-      console.log("Error while updating profile => ",err)
-      console.log(err);
-      toast.error(err);
+      console.log("Error while updating profile => ", err);
+      toast.error(err.message);
       setLoading(false);
+    } finally {
+      setUploading(false);
     }
   };
 
-  // function to update profile page
-  const handleImage = async (e) =>{
-    const file = e.target.files[0]; // it could be the array
-    let formData = new FormData();
-    formData.append('image', file);
-    // console.log([...formData]);
-    
-    setUploading(true);
-    try {
-      const {data} = await axios.post('/upload-image', formData);
-      // console.log(data);
-      setImage({
-        url: data.url,
-        public_id: data.public_id
-      })
-      setUploading(false);
-    } catch (error) {
-      console.log("Error while upload image => ",error);
-      setUploading(false)
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
     }
   };
 
@@ -113,44 +86,19 @@ const ProfileUpdate = () => {
 
       <div className="row py-5">
         <div className="col-md-6 offset-md-3">
-          {/* UPload image start */}
-          {/* <label className="d-flex justify-content-center h5">
-            {image && image.url ? (
-              <Avatar size={30} src={image.url} className="mt-1" />
-            ) : uploading ? (
-              <LoadingOutlined className="mt-2" />
-            ) : (
-              <CameraOutlined className="mt-2" />
-            )}
-
-            <input
-              onChange={handleImage}
-              type="file"
-              accept="images/*"
-              hidden
-            />
-          </label>
-          UPload image end */}
-
-          {/* FORM */}
-          <AuthForm
+          <UpdateForm
             profileUpdate={true}
             handleSubmit={handleSubmit}
             name={name}
             setName={setName}
             age={age}
             setAge={setAge}
-            // email={email}
-            // setEmail={setEmail}
-            // password={password}
-            // setPassword={setPassword}
-            // secret={secret}
-            // setSecret={setSecret}
-            // loading={loading}
-            // username={username}
-            // setUsername={setUsername}
-            // about={about}
-            // setAbout={setAbout}
+            email={email}
+            setEmail={setEmail}
+            loading={loading}
+            handleImage={handleImage}
+            image={image}
+            uploading={uploading}
           />
         </div>
       </div>
@@ -163,7 +111,7 @@ const ProfileUpdate = () => {
             onCancel={() => setOk(false)}
             footer={null}
           >
-            <p>You have successfully update your profile.</p>
+            <p>You have successfully updated your profile.</p>
           </Modal>
         </div>
       </div>

@@ -1,44 +1,25 @@
-import { Avatar, List } from "antd";
-import moment from "moment"; // for date formating
-import { useRouter } from "next/router";
-import { useContext } from "react";
-import { UserContext } from "../../context";
-import { imageSource } from "../../functions";
+import React from "react";
+
+import { Avatar, Tooltip, Button } from "antd";
+
 
 const People = ({ people, handleFollow }) => {
-  const [state, setState] = useContext(UserContext);
-
-  const router = useRouter();
-
-  //function to show profile image if user uploaded --> I put this in functions folder
-//   const imageSource = (user) =>{
-//   if(user.image){
-//     return user.image.url;
-//   }else{
-//     return '/images/logo.png'
-//   }
-// }
-  
   return (
-    <>
-      {/* <pre>{JSON.stringify(people,null,4)}</pre> */}
-      <List
-        itemLayout="horizontal"
-        dataSource={people}
-        renderItem={(user) => (
-          <List.Item>
-            <List.Item.Meta
-             avatar={<Avatar src={imageSource(user)} />}
-              title={
-                <div className="d-flex justify-content-between">
-                  {user.username} <span onClick={() => handleFollow(user)} className="text-primary pointer">Follow</span>
-                </div>
-              }
-            />
-          </List.Item>
-        )}
-      />
-    </>
+    <div>
+      <h4>People you may know</h4>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {people.map((person) => (
+          <li key={person._id} style={{ marginBottom: "10px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Avatar size={50} alt={person.name}  src={person.imageBase64} style={{ marginRight: "10px" }} />
+              <div><strong>{person.name}</strong></div>
+            </div>
+            <button style={{ backgroundColor: "#007bff", color: "#fff", padding: "5px 10px", borderRadius: "5px", border: "none", cursor: "pointer" }} onClick={() => handleFollow(person)}>Send Request</button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
+
 export default People;

@@ -29,21 +29,21 @@ module.exports.createPost = async (req, res, next) => {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, 'hasan secret');
 
-        let user = await User.findById(decodedToken.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
         const { content } = req.body;
         const imageUrl = req.file ? req.file.path : '';  // Path where the image is stored
 
+        // Create a new post
         const newPost = await Post.create({
             content,
             author: decodedToken.id,
             imageUrl  // Save image path to the database
         });
-        console.log("Post created ", newPost);
 
+        // Add the ID of the newly created post to the user's posts array using findByIdAndUpdate
+        await User.findByIdAndUpdate(decodedToken.id, { $push: { posts: newPost._id } });
+
+        console.log("Post created ", newPost);
+        
         res.status(201).json({ message: 'Post created successfully', post: newPost });
     } catch (error) {
         console.error(error);
@@ -52,8 +52,8 @@ module.exports.createPost = async (req, res, next) => {
         }
         return res.status(500).json({ message: 'Internal server error' });
     }
-
 };
+
 
 
 
