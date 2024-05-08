@@ -69,7 +69,8 @@ const Home = () => {
       const { data } = await axios.get("http://localhost:5000/social");
       const transformedPosts = data.map((post) => ({
         ...post,
-        postedBy: post.author._id,
+        postedBy: post.author,
+        authorimage: post.author.imageUrl,
         like: post.likes.map((user) => user._id),
         comments: post.comments.map((comment) => ({
           _id: comment._id,
@@ -86,26 +87,7 @@ const Home = () => {
     }
   };
 
-  // this function if for find people and show on the sidebar (as suggestion to follow)
-  const findPeople = async () => {
-    try {
-      const { data } = await axios.get("/find-people");
-      const transformedPeople = data.map((person) => ({
-        name: person.name,
-        email: person.email,
-        password: person.password, // Make sure this is secure and necessary
-        about: person.role, // Assuming you're using role as about description
-        username: person._id, // Assuming you're using _id as username
-        image: person.image || { url: "default.jpg", public_id: "default" },
-        following: person.following,
-        followers: person.followers,
-      }));
-      setPeople(transformedPeople);
-    } catch (error) {
-      console.log("Error while finding people Client =>", error);
-    }
-  };
-
+  
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {

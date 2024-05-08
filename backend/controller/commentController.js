@@ -44,22 +44,20 @@ module.exports.getCommentsByPostId = async (req, res) => {
     }
 };
 
-module.exports.updateComment = async (req, res) => {
+
+module.exports.editComment = async (req, res) => {
     try {
         const commentId = req.params.commentId;
         const { content } = req.body;
 
-        const comment = await Comment.findById(commentId);
+        const comment = await Comment.findByIdAndUpdate(commentId, { content }, { new: true });
         if (!comment) {
             return res.status(404).json({ message: "Comment not found" });
         }
 
         if (comment.author.toString() !== req.user.id) {
-            return res.status(403).json({ message: "You are not authorized to update this comment" });
+            return res.status(403).json({ message: "You are not authorized to edit this comment" });
         }
-
-        comment.content = content;
-        await comment.save();
 
         res.status(200).json({ message: "Comment updated successfully", comment });
     } catch (error) {
@@ -67,6 +65,9 @@ module.exports.updateComment = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+
+
 
 module.exports.deleteComment = async (req, res) => {
     try {

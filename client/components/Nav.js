@@ -56,6 +56,17 @@ const Nav = () => {
             Dashboard
           </Link>
           </li>
+          <li>
+          <Link
+            href="/user/userprofile"
+            className={`nav-link dropdown-item ${
+              current === "/user/userprofile" && "active"
+            }`}
+          >
+            User Profile
+          </Link>
+          </li>
+
           {/* Link for updatepage */}
           <li>
           <Link

@@ -1,6 +1,9 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
+const fs = require('fs');
+const path = require('path');
 
+const jwt = require('jsonwebtoken');
 
 const multer = require('multer');
 
@@ -24,20 +27,29 @@ const upload = multer({
 const profileController = {
     getCurrentUser: async (req, res) => {
         try {
-            // Get the current user's ID from the request
             const userId = req.user.id;
-
-            // Find the current user by ID
             const currentUser = await User.findById(userId);
-
-            // Return the current user's data as JSON response
-            res.status(200).json(currentUser);
+    
+            const getImageBase64 = async (imagePath) => {
+                const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                return `data:image/jpeg;base64,${imageAsBase64}`;
+            };
+    
+            const userImageBase64 = await getImageBase64(currentUser.imageUrl);
+    
+            const userWithImageBase64 = {
+                ...currentUser.toObject(),
+                imageUrl: userImageBase64
+            };
+    
+            res.status(200).json(userWithImageBase64);
         } catch (error) {
-            // Handle errors
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    
+
     update_profile: async (req, res) => {
         try {
             const userId = req.user.id;
@@ -113,7 +125,66 @@ const profileController = {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
+    },
+    showUserPosts: async (req, res) => {
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+            jwt.verify(token, 'hasan secret', async (err, decodedToken) => {
+                if (err) {
+                    res.status(401).json({ message: 'Unauthorized' });
+                } else {
+                    const user = await User.findById(decodedToken.id).populate('friends');
+    
+                    const posts = await Post.find({ author: user._id })
+                        .populate('author')
+                        .populate({
+                            path: 'comments',
+                            populate: {
+                                path: 'author',
+                                select: '_id name imageUrl'
+                            }
+                        });
+    
+                    const getImageBase64 = async (imagePath) => {
+                        const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                        return `data:image/jpeg;base64,${imageAsBase64}`;
+                    };
+    
+                    const postsWithImages = await Promise.all(posts.map(async post => {
+                        const postImageBase64 = await getImageBase64(post.imageUrl);
+                        const authorImageBase64 = await getImageBase64(post.author.imageUrl);
+    
+                        const commentsWithImages = await Promise.all(post.comments.map(async comment => {
+                            const commentAuthorImageBase64 = await getImageBase64(comment.author.imageUrl);
+                            return {
+                                ...comment._doc,
+                                author: {
+                                    ...comment.author._doc,
+                                    imageUrl: commentAuthorImageBase64
+                                }
+                            };
+                        }));
+    
+                        return {
+                            ...post._doc,
+                            imageBase64: postImageBase64,
+                            author: {
+                                ...post.author._doc,
+                                imageUrl: authorImageBase64
+                            },
+                            comments: commentsWithImages
+                        };
+                    }));
+    
+                    res.status(200).json(postsWithImages);
+                }
+            });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
+    
+
 };
 
 
