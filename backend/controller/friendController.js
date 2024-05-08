@@ -80,20 +80,37 @@ const friendController = {
 
     getFriendRequests: async (req, res) => {
         const userId = req.user.id;
-
+    
         try {
-            const user = await User.findById(userId).populate('pendingFriendRequests', 'name email');
+            const user = await User.findById(userId).populate('pendingFriendRequests', 'name email imageUrl');
             
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-
-            res.status(200).json({ friendRequests: user.pendingFriendRequests });
+    
+            // Function to convert image to base64
+            const getImageBase64 = async (imagePath) => {
+                const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                return `data:image/jpeg;base64,${imageAsBase64}`;
+            };
+    
+            // Map over pending friend requests and convert images to base64
+            const friendRequests = await Promise.all(user.pendingFriendRequests.map(async friend => {
+                const friendImageBase64 = await getImageBase64(friend.imageUrl);
+                return {
+                    ...friend.toObject(),
+                    imageUrl: friendImageBase64
+                };
+            }));
+    
+            res.status(200).json({ friendRequests });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    
+    
     getSuggestedFriends: async (req, res) => {
         const userId = req.user.id;
     

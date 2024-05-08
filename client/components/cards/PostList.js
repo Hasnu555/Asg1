@@ -90,6 +90,8 @@ const PostList = ({ posts, fetchUserPost }) => {
       {posts.map((post) => (
         <div key={post._id} className="card mb-5">
           <div className="card-header">
+            <Avatar src={post.authorimage} />
+            <strong>{post.postedBy.name}</strong>
             <span className="pt-2 mx-3">
               {moment(post.createdAt).fromNow()}
             </span>
@@ -137,10 +139,10 @@ const PostList = ({ posts, fetchUserPost }) => {
                     )}
                   >
                     <Avatar size={25} src={comment.posterimage} />
-                             
+
                     <strong className="mx-2">{comment.postedBy}</strong>
-                    
-                  <p>{comment.text}</p>
+
+                    <p style={{ width: "100%" }}>{comment.text}</p>
                   </Tooltip>
                   {index !== post.comments.length - 1 && <hr />} {/* Divider */}
                 </div>
@@ -157,8 +159,20 @@ const PostList = ({ posts, fetchUserPost }) => {
                   value={commentContent}
                   onChange={(e) => setCommentContent(e.target.value)}
                   placeholder="Write a comment..."
+                  style={{
+                    width: "80%",
+                    padding: "8px", // Add padding for better visual appearance
+                    borderRadius: "4px", // Add rounded corners
+                    border: "1px solid #ccc", // Add border for better visibility
+                    fontSize: "14px", // Adjust font size for readability
+                  }}
                 />
-                <button type="submit">Comment</button>
+
+                <Button
+                  type="primary"
+                >
+                  Comment
+                </Button>
               </form>
             </div>
           )}

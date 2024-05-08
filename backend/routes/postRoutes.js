@@ -32,7 +32,7 @@ router.delete('/social/:id',requireAuth, postController.deletePost);//user id
 // Routes for comments
 router.post('/social/:postId/comments', requireAuth, commentController.createComment);
 router.get('/social/:postId/comments', requireAuth, commentController.getCommentsByPostId);
-router.put('/social/comments/:commentId', requireAuth, commentController.updateComment);
+router.put('/social/comments/:commentId', requireAuth, commentController.editComment);
 router.delete('/social/comments/:commentId', requireAuth, commentController.deleteComment);
 
 

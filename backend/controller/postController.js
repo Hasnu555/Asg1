@@ -64,7 +64,12 @@ module.exports.showPosts = async (req, res) => {
             if (err) {
                 res.status(401).json({ message: 'Unauthorized' });
             } else {
-                const posts = await Post.find({ author: { $in: decodedToken.id } })
+                const user = await User.findById(decodedToken.id).populate('friends');
+                
+                // Extract IDs of the user's friends
+                const friendIds = user.friends.map(friend => friend._id);
+
+                const posts = await Post.find({ author: { $in: friendIds } })
                     .populate('author')
                     .populate({
                         path: 'comments',
