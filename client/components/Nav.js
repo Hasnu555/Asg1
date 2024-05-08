@@ -24,11 +24,12 @@ const Nav = () => {
   return (
     <nav
       className="nav d-flex justify-content-between"
-      style={{ backgroundColor: "blue" }}
+      style={{ backgroundColor: "purple" }}
     >
       <Link href="/" className="nav-link text-light logo">
-        <Avatar src={'/images/logo.png'}/> SocialBridge
-      </Link>
+  <Avatar src={'/images/logoL.png'} className="logo" /> 
+</Link>
+
      
 
       {state !== null ? (
