@@ -5,11 +5,13 @@
     text-shadow: 2px 2px 8px #000;
 }
 .logo{
-    text-shadow: 2px 2px navy;
+    text-shadow: 2px 2px rgb(91, 10, 91);
+    width: auto;
+ 
 }
 
 .active{
-    background-color: navy;
+    background-color: rgb(91, 10, 91);
 }
 
 .pointer {
