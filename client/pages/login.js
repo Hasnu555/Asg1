@@ -37,6 +37,7 @@ const Login = () => {
       window.localStorage.setItem('auth',JSON.stringify(data));
       document.cookie = `token=${data.token}`;
       localStorage.setItem("token", data.token);
+      //sending user to dashboard by default
       router.push("/");
     } catch (err) {
       if (err.response && err.response.data) {
