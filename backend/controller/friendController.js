@@ -8,6 +8,38 @@ const User = require('../models/User');
 
 
 const friendController = {
+
+    searchUsers : async (req, res) => {
+        try {
+            const { query } = req.query;
+            const users = await User.find({
+                $or: [
+                    { name: { $regex: query, $options: 'i' } }, // Search by name (case-insensitive)
+                    { email: { $regex: query, $options: 'i' } } // Search by email (case-insensitive)
+                ]
+            }).select('name email imageUrl'); // Select only necessary fields
+            
+            const getImageBase64 = async (imagePath) => {
+                const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                return `data:image/jpeg;base64,${imageAsBase64}`;
+            };
+
+            // Convert image URLs to base64
+            const usersWithBase64Images = await Promise.all(users.map(async user => {
+                const imageAsBase64 = await getImageBase64(user.imageUrl);
+                return {
+                    ...user.toObject(),
+                    imageUrl: imageAsBase64
+                };
+            }));
+    
+            res.json(usersWithBase64Images);
+        } catch (error) {
+            console.error('Error searching users:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
+
     sendFriendRequest: async (req, res) => {
         const senderId = req.user.id;
         const recipientId = req.params.id;
@@ -144,6 +176,30 @@ const friendController = {
             }));
     
             res.status(200).json({ suggestedFriends: suggestedFriendsWithImages });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    unfriend: async (req, res) => {
+        const userId = req.user.id;
+        const friendId = req.params.id;
+
+        try {
+            const user = await User.findById(userId);
+            const friend = await User.findById(friendId);
+
+            if (!user.friends.includes(friendId)) {
+                return res.status(400).json({ error: 'You are not friends with this user' });
+            }
+
+            user.friends = user.friends.filter(f => f.toString() !== friendId);
+            await user.save();
+
+            friend.friends = friend.friends.filter(f => f.toString() !== userId);
+            await friend.save();
+
+            res.status(200).json({ message: 'Successfully unfriended' });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal server error' });

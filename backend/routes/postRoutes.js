@@ -29,6 +29,12 @@ router.post('/social', upload.single('image'), requireAuth,postController.create
 router.put('/social/:id',requireAuth, postController.updatePost);//user id
 router.delete('/social/:id',requireAuth, postController.deletePost);//user id
 
+
+router.get('/friend-posts/:friendId',requireAuth, postController.getFriendPosts);
+
+
+
+
 // Routes for comments
 router.post('/social/:postId/comments', requireAuth, commentController.createComment);
 router.get('/social/:postId/comments', requireAuth, commentController.getCommentsByPostId);

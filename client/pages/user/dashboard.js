@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import PostList from "../../components/cards/PostList";
 import People from "../../components/cards/People";
 import Link from "next/link";
+import SearchBar from "../../components/SearchBar"; // Import the SearchBar component
+
 
 const Home = () => {
   const [state, setState] = useContext(UserContext);
@@ -205,6 +207,8 @@ const Home = () => {
 
         {/* Sidebar */}
         <div className="col-md-4">
+        <SearchBar setSearchResults={setPeople} /> {/* Integrate the SearchBar component */}
+          
           {/* following tag */}
           {state && state.user && state.user.following && (
             <Link href={`/user/following`} className="h6 text-decoration-none">

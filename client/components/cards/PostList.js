@@ -13,6 +13,8 @@ import {
   CommentOutlined,
   DownOutlined,
   UpOutlined,
+  LikeOutlined,
+  DislikeOutlined,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
@@ -21,6 +23,7 @@ const PostList = ({ posts, fetchUserPost }) => {
   const [state] = useContext(UserContext);
   const [visibleComments, setVisibleComments] = useState({});
   const [commentContent, setCommentContent] = useState("");
+  const [likedPosts, setLikedPosts] = useState([]);
 
   const router = useRouter();
 
@@ -34,6 +37,7 @@ const PostList = ({ posts, fetchUserPost }) => {
         }
       );
       fetchUserPost();
+      setLikedPosts((prev) => [...prev, postId]);
       console.log("Like response:", data);
       // Optionally refresh post data here
     } catch (error) {
@@ -53,6 +57,8 @@ const PostList = ({ posts, fetchUserPost }) => {
         }
       );
       fetchUserPost();
+
+      setLikedPosts((prev) => prev.filter((id) => id !== postId));
       console.log("Unlike response:", data);
       // Optionally refresh post data here
     } catch (error) {
@@ -62,6 +68,7 @@ const PostList = ({ posts, fetchUserPost }) => {
       );
     }
   };
+
   const handleComment = async (postId, content) => {
     try {
       const { data } = await axios.post(
@@ -109,19 +116,39 @@ const PostList = ({ posts, fetchUserPost }) => {
               />
             )}
           </div>
+          
           <div className="card-footer">
-            {post.like.includes(state.user._id) ? (
-              <HeartFilled
-                onClick={() => handleUnlike(post._id)}
-                className="text-danger pt-2 h5 px-2"
-              />
-            ) : (
-              <HeartOutlined
-                onClick={() => handleLike(post._id)}
-                className="text-danger pt-2 h5 px-2"
-              />
-            )}
+          {/* {post.like.includes(state.user._id)
+              
+              ?
+              (
+                (
+                  <HeartFilled
+                    onClick={() => handleUnlike(post._id)}
+                    className="text-danger pt-2 h5 px-2"
+                  />
+                ))
+              : (
+                (
+                  <HeartOutlined
+                    onClick={() => handleLike(post._id)}
+                    className="text-danger pt-2 h5 px-2"
+                  />
+                ))} */}
+
+<LikeOutlined
+                    onClick={() => handleLike(post._id)}
+                    className="text-danger pt-2 h5 px-2"
+                  />
+
+<DislikeOutlined
+                    onClick={() => handleUnlike(post._id)}
+                    className="text-danger pt-2 h5 px-2"
+                  />
+
+
             <span className="pt-2">{post.like.length} Likes</span>
+
             <Button type="link" onClick={() => toggleComments(post._id)}>
               <CommentOutlined className="text-danger pt-2 h5 px-2 mx-3" />
               {/* <span>{post.comments.length} Comments</span> */}
@@ -168,9 +195,7 @@ const PostList = ({ posts, fetchUserPost }) => {
                   }}
                 />
 
-                <Button
-                  type="primary"
-                >
+                <Button type="primary" htmlType="submit">
                   Comment
                 </Button>
               </form>
