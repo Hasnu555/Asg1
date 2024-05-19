@@ -5,7 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 
-
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const profileRoutes = require('./routes/profileRoutes');
@@ -36,8 +35,10 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 
+
 // Database connection
 const dbURI = 'mongodb+srv://hasanjawaid:091200@hasan.mg8eu13.mongodb.net/node-authnode?retryWrites=true';
+
 
 app.use(cors());
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })

@@ -48,6 +48,44 @@ const profileController = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+
+
+    getFriendInfo : async (req, res) => {
+        try {
+            // Extract friend id from request parameters
+            const { friendId } = req.params;
+    
+            // Find the friend by id, excluding the password field
+            const friend = await User.findById(friendId).select('-password');
+    
+            // Check if the friend exists
+            if (!friend) {
+                return res.status(404).json({ message: "Friend not found" });
+            }
+    
+            // Function to read image as base64
+            const getImageBase64 = async (imagePath) => {
+                const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                return `data:image/jpeg;base64,${imageAsBase64}`;
+            };
+    
+            // Get base64 representation of the friend's image
+            const friendImageBase64 = await getImageBase64(friend.imageUrl);
+    
+            // Construct the friend object with base64 image
+            const friendWithImageBase64 = {
+                ...friend.toObject(),
+                imageUrl: friendImageBase64
+            };
+    
+            // Send the friend information with base64 image in the response
+            res.status(200).json(friendWithImageBase64);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    
+    },
     
 
     update_profile: async (req, res) => {

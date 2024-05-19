@@ -26,6 +26,9 @@ const router = Router();
 
 router.get('/currentUser', requireAuth, profileController.getCurrentUser);
 
+router.get('/friendinfo/:friendId', requireAuth, profileController.getFriendInfo);
+
+
 router.get('/showUserPosts', requireAuth, profileController.showUserPosts)
 
 router.get('/:userId/posts', requireAuth, profileController.getUserPosts);

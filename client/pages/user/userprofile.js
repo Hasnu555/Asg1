@@ -36,9 +36,8 @@ const UserProfile = () => {
   useEffect(() => {
     if (state && state.token) {
       fetchUserProfile();
-    //   fetchPosts();
       fetchFriendRequests();
-      myPosts();
+      fetchUserPost();
     }
   }, [state, userId]);
 
@@ -53,7 +52,7 @@ const UserProfile = () => {
     }
   };
 
-  const myPosts = async () => {
+  const fetchUserPost = async () => {
     try {
       const { data } = await axios.get("http://localhost:5000/showUserPosts",{headers: { Authorization: `Bearer ${state.token}` },});
       const transformedPosts = data.map((post) => ({
@@ -155,7 +154,7 @@ const UserProfile = () => {
 
           {/* pre tag to read json data nicely */}
           {/* <pre>{JSON.stringify(post, null, 4)}</pre> */}
-          <PostList posts={posts} myPosts={myPosts} />
+          <PostList posts={posts} fetchUserPost={fetchUserPost} />
           
         </div>
 
