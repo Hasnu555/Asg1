@@ -60,6 +60,8 @@ app.use(authRoutes);
 app.use(profileRoutes);
 app.use(friendRoutes);
 app.use(groupRoutes);
-// app.use('user/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/messages', messageRoutes)
+app.use("/chat",messageRoutes)
+
+
+// app.use('user/uploads', express.static(path.join(__dirname, 'uploads')));
