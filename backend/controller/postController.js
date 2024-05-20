@@ -94,7 +94,7 @@ module.exports.getFriendPosts = async (req, res) => {
             // Function to read image as base64
             const getImageBase64 = async (imagePath) => {
                 try {
-                    if (!fs.existsSync(imagePath)) {
+                    if (!imagePath || !fs.existsSync(imagePath)) {
                         throw new Error(`Image file not found: ${imagePath}`);
                     }
             
@@ -173,7 +173,7 @@ module.exports.showPosts = async (req, res) => {
                 const getImageBase64 = async (imagePath) => {
                     try {
                         // Check if the file exists at the specified path
-                        if (!fs.existsSync(imagePath)) {
+                        if (!imagePath || !fs.existsSync(imagePath)) {
                             throw new Error(`Image file not found: ${imagePath}`);
                         }
                 

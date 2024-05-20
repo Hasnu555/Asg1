@@ -16,6 +16,7 @@ const Home = () => {
   const [state, setState] = useContext(UserContext);
   //state
   const [content, setContent] = useState("");
+  
   const [posts, setPosts] = useState([
     {
       content: "This is a sample post content from a rich text editor",

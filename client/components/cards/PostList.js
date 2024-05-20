@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext, useState } from "react";
-import { UserContext } from "../../context";
+import { UserContext } from "../../context/index.js";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -39,7 +39,6 @@ const PostList = ({ posts, fetchUserPost }) => {
       fetchUserPost();
       setLikedPosts((prev) => [...prev, postId]);
       console.log("Like response:", data);
-      // Optionally refresh post data here
     } catch (error) {
       console.error(
         "Error liking post:",
@@ -57,10 +56,8 @@ const PostList = ({ posts, fetchUserPost }) => {
         }
       );
       fetchUserPost();
-
       setLikedPosts((prev) => prev.filter((id) => id !== postId));
       console.log("Unlike response:", data);
-      // Optionally refresh post data here
     } catch (error) {
       console.error(
         "Error unliking post:",
@@ -78,7 +75,7 @@ const PostList = ({ posts, fetchUserPost }) => {
           headers: { Authorization: `Bearer ${state.token}` },
         }
       );
-      fetchUserPost(); // Optionally refresh post data here
+      fetchUserPost();
       console.log("Comment response:", data);
     } catch (error) {
       console.error(
@@ -105,8 +102,9 @@ const PostList = ({ posts, fetchUserPost }) => {
           </div>
           <div className="card-body">
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
-
-            {post.imageUrl && (
+            
+            {post.imageBase64 && (
+              // console.log("post.imageBase64", post.imageBase64),
               <Image
                 src={post.imageBase64}
                 width={20}
@@ -116,46 +114,21 @@ const PostList = ({ posts, fetchUserPost }) => {
               />
             )}
           </div>
-          
           <div className="card-footer">
-          {/* {post.like.includes(state.user._id)
-              
-              ?
-              (
-                (
-                  <HeartFilled
-                    onClick={() => handleUnlike(post._id)}
-                    className="text-danger pt-2 h5 px-2"
-                  />
-                ))
-              : (
-                (
-                  <HeartOutlined
-                    onClick={() => handleLike(post._id)}
-                    className="text-danger pt-2 h5 px-2"
-                  />
-                ))} */}
-
-<LikeOutlined
-                    onClick={() => handleLike(post._id)}
-                    className="text-danger pt-2 h5 px-2"
-                  />
-
-<DislikeOutlined
-                    onClick={() => handleUnlike(post._id)}
-                    className="text-danger pt-2 h5 px-2"
-                  />
-
-
+            <LikeOutlined
+              onClick={() => handleLike(post._id)}
+              className="text-danger pt-2 h5 px-2"
+            />
+            <DislikeOutlined
+              onClick={() => handleUnlike(post._id)}
+              className="text-danger pt-2 h5 px-2"
+            />
             <span className="pt-2">{post.like.length} Likes</span>
-
             <Button type="link" onClick={() => toggleComments(post._id)}>
               <CommentOutlined className="text-danger pt-2 h5 px-2 mx-3" />
-              {/* <span>{post.comments.length} Comments</span> */}
               {visibleComments[post._id] ? <UpOutlined /> : <DownOutlined />}
             </Button>
           </div>
-          {/* Comment Section */}
           {visibleComments[post._id] && (
             <div className="bg-white p-3 border-top">
               {post.comments.map((comment, index) => (
@@ -166,19 +139,17 @@ const PostList = ({ posts, fetchUserPost }) => {
                     )}
                   >
                     <Avatar size={25} src={comment.posterimage} />
-
                     <strong className="mx-2">{comment.postedBy}</strong>
-
                     <p style={{ width: "100%" }}>{comment.text}</p>
                   </Tooltip>
-                  {index !== post.comments.length - 1 && <hr />} {/* Divider */}
+                  {index !== post.comments.length - 1 && <hr />}
                 </div>
               ))}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleComment(post._id, commentContent);
-                  setCommentContent(""); // Clear the input after submitting
+                  setCommentContent("");
                 }}
               >
                 <input
@@ -188,13 +159,12 @@ const PostList = ({ posts, fetchUserPost }) => {
                   placeholder="Write a comment..."
                   style={{
                     width: "80%",
-                    padding: "8px", // Add padding for better visual appearance
-                    borderRadius: "4px", // Add rounded corners
-                    border: "1px solid #ccc", // Add border for better visibility
-                    fontSize: "14px", // Adjust font size for readability
+                    padding: "8px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                    fontSize: "14px",
                   }}
                 />
-
                 <Button type="primary" htmlType="submit">
                   Comment
                 </Button>
