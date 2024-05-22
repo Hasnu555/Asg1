@@ -1,54 +1,25 @@
-import { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { SyncOutlined } from "@ant-design/icons";
-import { UserContext } from "../../context";
+// components/routes/ProtectedRoute.js
+import { useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { UserContext } from '../../context';
 
-// this context is used for check if userToken is verified or not (current-user)
 const UserRoute = ({ children }) => {
-  const [ok, setOk] = useState(false);
+  const [state] = useContext(UserContext);
   const router = useRouter();
 
-  const [state, setState] = useContext(UserContext);
-
   useEffect(() => {
-    if(state && state.token) getCurrentUser();
-  }, [state && state.token]);
-
-  const getCurrentUser = async () => {
-    try {
-      // const { data } = await axios.get(
-      //   `http://localhost:5000/users/current-user`,
-      //   {
-      //     headers: {
-      //   'Authorization': 'Bearer ' + document.cookie.split('=')[1]
-      //     },
+    if (!state || !state.token) {
       
-      //   user: state.user
-        
-      //   }
-      // );
-      data = state.user
-      console.log("Data: ",data)
-      if (data.ok) setOk(true);
-    } catch (err) {
-      console.log("nahi hua")
-      router.push("/login");
+      router.push('/login');
     }
-  };
-  // it will run when we are in client side and there nothing in the state 
-  process.browser && state === null && setTimeout(() =>{
-    getCurrentUser();
-  },1000);
+  }, [state, router]);
 
-  return !ok ? (
-    <SyncOutlined
-      spin
-      className="d-flex justify-content-center display-1 text-primary p-5"
-    />
-  ) : (
-    <>{ children }</>
-  );
+  if (!state || !state.token) {
+    return null; // or a loading spinner
+  }
+  
+
+  return children;
 };
 
 export default UserRoute;

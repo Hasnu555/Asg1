@@ -181,7 +181,7 @@ const Home = () => {
   };
 
   return (
-    // <UserRoute>
+    <UserRoute>
     <div className="container-fluid">
       <div className="row py-5 bg-default-image">
         <div className="col text-center">
@@ -226,7 +226,7 @@ const Home = () => {
         </div>
       </div>
     </div>
-    // </UserRoute>
+     </UserRoute>
   );
 };
 

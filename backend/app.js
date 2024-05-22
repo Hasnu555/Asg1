@@ -16,6 +16,13 @@ const chatRoutes = require('./routes/chatRoutes');
 const Chat = require('./models/Chat'); // Ensure Chat model is imported
 
 const app = express();
+
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
+
+
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   cors: {

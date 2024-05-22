@@ -6,15 +6,15 @@ import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 
 const ENDPOINT = 'http://localhost:5000';
-const socket = socketIOClient(ENDPOINT, {
-  auth: {
-    token: localStorage.getItem('token'),
-  },
-});
 
 const People = ({ people, handleFollow }) => {
   const [state] = useContext(UserContext);
-
+  const socket = socketIOClient(ENDPOINT, {
+    auth: {
+      token: state.token
+    },
+  });
+  
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [selectedPerson, setSelectedPerson] = useState(null);

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import PostList from '../../components/cards/PostList';
 import { useRouter } from 'next/router';
 import { Avatar, Button, Card, Image } from 'antd';
+import UserRoute from '../../components/routes/UserRoute';
+
 import {
   HeartOutlined,
   HeartFilled,
@@ -112,7 +114,7 @@ const UserProfile = () => {
   
 
   return (
-
+    <UserRoute>
     <div className="container-fluid">
       
       {/* <div className="row py-5 bg-default-image">
@@ -181,7 +183,7 @@ const UserProfile = () => {
         </div>
       </div>
      </div>
-
+     </UserRoute>
   );
 };
 
