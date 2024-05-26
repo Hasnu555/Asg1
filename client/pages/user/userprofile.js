@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context';
 import axios from 'axios';
 import Link from 'next/link';
-import PostList from '../../components/cards/PostList';
+import MyPostList from '../../components/cards/MyPostList';
 import { useRouter } from 'next/router';
 import { Avatar, Button, Card, Image } from 'antd';
 import UserRoute from '../../components/routes/UserRoute';
@@ -156,7 +156,7 @@ const UserProfile = () => {
 
           {/* pre tag to read json data nicely */}
           {/* <pre>{JSON.stringify(post, null, 4)}</pre> */}
-          <PostList posts={posts} fetchUserPost={fetchUserPost} />
+          <MyPostList posts={posts} fetchUserPost={fetchUserPost} />
           
         </div>
 

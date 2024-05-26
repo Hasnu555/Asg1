@@ -99,7 +99,7 @@ const People = ({ people, handleFollow }) => {
               justifyContent: 'space-between',
             }}
           >
-            <Link href={`http://localhost:5000/friend-profile/${person._id}`}>
+            <Link href={`/friend-profile/${person._id}`}>
               <div
                 style={{
                   display: 'flex',
@@ -123,11 +123,11 @@ const People = ({ people, handleFollow }) => {
                 style={{
                   backgroundColor: '#007bff',
                   color: '#fff',
-                  padding: '5px 10px',
+                  padding: '5px 5px',
                   borderRadius: '5px',
                   border: 'none',
                   cursor: 'pointer',
-                  marginRight: '10px',
+                  marginRight: '5px',
                 }}
                 onClick={() => handleFollow(person)}
               >
@@ -137,7 +137,7 @@ const People = ({ people, handleFollow }) => {
                 style={{
                   backgroundColor: '#28a745',
                   color: '#fff',
-                  padding: '5px 10px',
+                  padding: '5px 5px',
                   borderRadius: '5px',
                   border: 'none',
                   cursor: 'pointer',

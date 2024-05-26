@@ -131,6 +131,7 @@ const profileController = {
             res.status(200).json(posts);
         } catch (error) {
             // Handle errors
+            
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
