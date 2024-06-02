@@ -1,22 +1,26 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../context";
+import { useRouter } from "next/router";
 
-const Home = () =>{
+const Home = () => {
+  const [state, setState] = useContext(UserContext);
+  const router = useRouter();
 
-    const [state, setState] = useContext(UserContext);
+  useEffect(() => {
+    if (!state || !state.token) {
+      router.push("/login");
+    }
+  }, [state, router]);
 
-    return(
-        <div className="container">
-            <div className="row">
-                <div className="col">
-                    {/* {JSON.stringify(state)} */}
-                    <h1 className="display-1 text-center py-5">Home Page</h1>
-                    <img src="/images/default.jpg" alt="image" />
-                </div>
-            </div>
-            
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <h1 className="display-1 text-center py-5">Home Page</h1>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Home;

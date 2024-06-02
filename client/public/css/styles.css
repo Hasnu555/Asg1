@@ -1,19 +1,57 @@
-.bg-default-image{
-    background-image: url("/images/default.jpg");
+/* Existing styles */
+.bg-default-image {
     background-size: 100%;
     height: 150px;
     text-shadow: 2px 2px 8px #000;
 }
-.logo{
+
+.logo {
     text-shadow: 2px 2px rgb(91, 10, 91);
     width: auto;
- 
 }
 
-.active{
+.active {
     background-color: rgb(91, 10, 91);
 }
 
 .pointer {
     cursor: pointer;
+}
+
+/* Dark theme styles */
+body {
+    background-color: #121212;
+    /* dark background */
+    color: #ffffff;
+    /* light text */
+}
+
+.nav {
+    background-color: #1f1b24;
+    /* dark purple */
+}
+
+.nav-link {
+    color: #bb86fc;
+    /* light purple */
+}
+
+.btn {
+    background-color: #3700b3;
+    /* dark purple button */
+    color: #ffffff;
+}
+
+.container-fluid {
+    background-color: #1f1b24;
+    /* dark grey background */
+    color: #ffffff;
+}
+
+.text-light {
+    color: #ffffff;
+}
+
+.text-dark {
+    color: #000000;
 }

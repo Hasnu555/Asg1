@@ -1,20 +1,21 @@
-import { UserProvider } from '../context';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Nav from '../components/Nav';
+import { UserProvider } from "../context";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Nav from "../components/Nav";
 import Head from "next/head";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "antd/dist/reset.css";
+import "../public/css/styles.css";
 
 export default function MyApp({ Component, pageProps }) {
-    return(
+  return (
     <UserProvider>
-    <Head>
+      <Head>
         <link rel="stylesheet" href="/css/styles.css" />
-    </Head>
-       <Nav /> 
-       <ToastContainer position="top-center"/>
-    <Component {...pageProps} />
-    </UserProvider> 
-    ) 
-  }
+      </Head>
+      <Nav />
+      <ToastContainer position="top-center" />
+      <Component {...pageProps} />
+    </UserProvider>
+  );
+}

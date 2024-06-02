@@ -19,7 +19,7 @@ const Register = () => {
 
   useEffect(() => {
     if (ok) {
-      router.push("/login");  // Redirect to login page
+      router.push("/login"); // Redirect to login page
     }
   }, [ok, router]);
 
@@ -57,7 +57,7 @@ const Register = () => {
 
   return (
     <div className="container-fluid">
-      <div className="row py-5 text-light bg-default-image">
+      <div className="row py-5 text-light">
         <div className="col text-center">
           <h1>Register</h1>
         </div>
