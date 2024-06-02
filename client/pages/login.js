@@ -11,14 +11,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const[state, setState] = useContext(UserContext);
-
+  const [state, setState] = useContext(UserContext);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // console.log(name, email, password, secret);
       setLoading(true);
       const { data } = await axios.post(
         `http://localhost:5000/login`,
@@ -27,31 +25,27 @@ const Login = () => {
           password,
         }
       );
-      // console.log(data);
-      // using context - update context
+      // Update context state with user and token
       setState({
         user: data.user,
-        token: data.token
+        token: data.token,
       });
-      // save in local storage
-      window.localStorage.setItem('auth',JSON.stringify(data));
-      document.cookie = `token=${data.token}`;
+      // Save token in local storage
       localStorage.setItem("token", data.token);
-      //sending user to dashboard by default
+      // Redirect to dashboard after successful login
       router.push("/");
     } catch (err) {
       if (err.response && err.response.data) {
-        // Check if err.response exists and has data property
         toast.error(err.response.data);
       } else {
-        // Handle the error if err.response or err.response.data is undefined
         toast.error("An error occurred");
       }
       setLoading(false);
     }
   };
-  // this is for if we user login so he can not access the login page by writing /login on url
-  if(state && state.token) router.push("/") // if user trying to access then it redirect to home page
+
+  // Redirect to home page if user is already logged in
+  if (state && state.token) router.push("/");
 
   return (
     <div className="container-fluid">
@@ -85,10 +79,11 @@ const Login = () => {
           </p>
         </div>
       </div>
-      {/* for logout */}
+
+      {/* Forgot Password */}
       <div className="row">
         <div className="col">
-        <p className="text-center">
+          <p className="text-center">
             <Link className="text-danger" href="/forgot-password">
               Forgot Password
             </Link>

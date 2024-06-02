@@ -76,7 +76,7 @@ const Nav = () => {
               current === "/user/profile/update" && "active"
             }`}
           >
-            profile
+            Edit Profile
           </Link>
           </li>
           <li>

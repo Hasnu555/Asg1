@@ -90,6 +90,7 @@ const FriendProfile = () => {
         )}
       </div>
     </div>
+    
   );
 };
 

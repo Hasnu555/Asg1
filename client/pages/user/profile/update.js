@@ -5,12 +5,15 @@ import { Modal, Avatar } from "antd";
 import Link from "next/link";
 import UpdateForm from "../../../components/forms/UpdateForm";
 import { useRouter } from "next/router";
+
+import UserRoute from "../../../components/routes/UserRoute";
 import { UserContext } from "../../../context";
 import { LoadingOutlined, CameraOutlined } from "@ant-design/icons";
 
 const ProfileUpdate = () => {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const[token, setToken] = useState("")
   const [email, setEmail] = useState("");
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,10 +22,12 @@ const ProfileUpdate = () => {
   const [uploading, setUploading] = useState(false);
 
   const router = useRouter();
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (state && state.user) {
+      // const token = state.token;
+      setToken(state.token);
       setName(state.user.name);
       setAge(state.user.age);
       setEmail(state.user.email);
@@ -77,6 +82,7 @@ const ProfileUpdate = () => {
   };
 
   return (
+    <UserRoute>
     <div className="container-fluid">
       <div className="row py-5 text-light bg-default-image">
         <div className="col text-center">
@@ -123,6 +129,7 @@ const ProfileUpdate = () => {
         </div>
       </div>
     </div>
+    </UserRoute>
   );
 };
 
