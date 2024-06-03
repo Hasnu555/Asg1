@@ -19,7 +19,7 @@ const Register = () => {
 
   useEffect(() => {
     if (ok) {
-      router.push("/login"); // Redirect to login page
+      router.push("/login");
     }
   }, [ok, router]);
 
@@ -56,14 +56,14 @@ const Register = () => {
   }, [state, router]);
 
   return (
-    <div className="container-fluid">
-      <div className="row py-5 text-light">
+    <div className="container-fluid auth-container">
+      <div className="row py-5 text-light bg-default-image">
         <div className="col text-center">
           <h1>Register</h1>
         </div>
       </div>
-      <div className="row py-5">
-        <div className="col-md-6 offset-md-3">
+      <div className="row py-5 auth-row">
+        <div className="col-md-6 offset-md-3 auth-col">
           <AuthForm
             handleSubmit={handleSubmit}
             name={name}
@@ -71,6 +71,7 @@ const Register = () => {
             setPassword={setPassword}
             setAge={setAge}
             loading={loading}
+            page="register"
           />
         </div>
       </div>
@@ -84,8 +85,8 @@ const Register = () => {
         <Link href="/login">Login</Link>
       </Modal>
       <div className="row">
-        <div className="col">
-          <p className="text-center">
+        <div className="col text-center">
+          <p className="text-light">
             Already registered? <Link href="/login">Login</Link>
           </p>
         </div>

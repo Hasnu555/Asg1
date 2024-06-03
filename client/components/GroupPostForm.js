@@ -1,10 +1,10 @@
 import { Avatar } from "antd";
 import dynamic from "next/dynamic";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false }); // dynamic import
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import { CameraOutlined, LoadingOutlined } from "@ant-design/icons";
 
-const CreatePostForm = ({
+const GroupPostForm = ({
   content,
   setContent,
   postSubmit,
@@ -13,14 +13,14 @@ const CreatePostForm = ({
   uploading,
 }) => {
   return (
-    <div className="card create-post-form">
+    <div className="card">
       <div className="card-body pb-3">
         <form className="form-group">
           <ReactQuill
             theme="snow"
             value={content}
             onChange={(e) => setContent(e)}
-            className="form-control quill-editor"
+            className="form-control"
             placeholder="Write something"
           />
           <input
@@ -32,17 +32,15 @@ const CreatePostForm = ({
           />
           <label
             htmlFor="file-upload"
-            className="btn btn-outline-secondary btn-sm mt-2 file-upload-label"
+            className="btn btn-outline-secondary btn-sm mt-2"
+            style={{ backgroundColor: "blue", color: "white" }}
           >
             {uploading ? <LoadingOutlined /> : <CameraOutlined />}
           </label>
         </form>
       </div>
       <div className="card-footer d-flex justify-content-between text-muted">
-        <button
-          onClick={postSubmit}
-          className="btn btn-primary mt-1 btn-sm post-button"
-        >
+        <button onClick={postSubmit} className="btn btn-primary mt-1 btn-sm">
           Post
         </button>
       </div>
@@ -50,4 +48,4 @@ const CreatePostForm = ({
   );
 };
 
-export default CreatePostForm;
+export default GroupPostForm;

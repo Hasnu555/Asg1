@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import AuthForm from "../components/forms/AuthForm";
 import { useRouter } from "next/router";
-import { UserContext } from "../context";
+import { UserContext } from "../context"; // Ensure this path is correct
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,7 +25,6 @@ const Login = () => {
       setState({
         user: data.user,
         token: data.token,
-        token: data.token,
       });
       window.localStorage.setItem("auth", JSON.stringify(data));
       document.cookie = `token=${data.token}`;
@@ -41,18 +40,21 @@ const Login = () => {
     }
   };
 
-  if (state && state.token) router.push("/");
+  if (state && state.token) {
+    router.push("/");
+    return null;
+  }
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid auth-container">
       <div className="row py-5 text-light bg-default-image">
         <div className="col text-center">
           <h1>Login</h1>
         </div>
       </div>
 
-      <div className="row py-5">
-        <div className="col-md-6 offset-md-3">
+      <div className="row py-5 auth-row">
+        <div className="col-md-6 offset-md-3 auth-col">
           <AuthForm
             handleSubmit={handleSubmit}
             email={email}
@@ -66,21 +68,18 @@ const Login = () => {
       </div>
 
       <div className="row">
-        <div className="col">
-          <p className="text-center">
+        <div className="col text-center">
+          <p className="text-light">
             Not yet registered? <Link href="/register">Register</Link>
           </p>
         </div>
       </div>
 
       <div className="row">
-        <div className="col">
-          <p className="text-center">
-          <p className="text-center">
-            <Link className="text-danger" href="/forgot-password">
-              Forgot Password
-            </Link>
-          </p>
+        <div className="col text-center">
+          <Link className="text-danger" href="/forgot-password">
+            Forgot Password
+          </Link>
         </div>
       </div>
     </div>
