@@ -16,6 +16,7 @@ const Home = () => {
   const [state, setState] = useContext(UserContext);
   //state
   const [content, setContent] = useState("");
+  
   const [posts, setPosts] = useState([
     {
       content: "This is a sample post content from a rich text editor",
@@ -180,7 +181,7 @@ const Home = () => {
   };
 
   return (
-    // <UserRoute>
+    <UserRoute>
     <div className="container-fluid">
       <div className="row py-5 bg-default-image">
         <div className="col text-center">
@@ -225,7 +226,7 @@ const Home = () => {
         </div>
       </div>
     </div>
-    // </UserRoute>
+     </UserRoute>
   );
 };
 

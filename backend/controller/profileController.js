@@ -131,6 +131,7 @@ const profileController = {
             res.status(200).json(posts);
         } catch (error) {
             // Handle errors
+            
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
@@ -183,10 +184,20 @@ const profileController = {
                             }
                         });
     
-                    const getImageBase64 = async (imagePath) => {
-                        const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
-                        return `data:image/jpeg;base64,${imageAsBase64}`;
-                    };
+                        const getImageBase64 = async (imagePath) => {
+                            try {
+                                if (!imagePath || !fs.existsSync(imagePath)) {
+                                    throw new Error(`Image file not found: ${imagePath}`);
+                                }
+                        
+                                const imageAsBase64 = fs.readFileSync(path.resolve(imagePath), 'base64');
+                                return `data:image/jpeg;base64,${imageAsBase64}`;
+                            } catch (error) {
+                                console.error('Error reading image file:', error);
+                                // You can handle the error here, e.g., log a warning message or return a placeholder image
+                                return null;
+                            }
+                        };
     
                     const postsWithImages = await Promise.all(posts.map(async post => {
                         const postImageBase64 = await getImageBase64(post.imageUrl);

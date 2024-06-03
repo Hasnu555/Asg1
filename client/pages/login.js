@@ -25,6 +25,7 @@ const Login = () => {
       setState({
         user: data.user,
         token: data.token,
+        token: data.token,
       });
       window.localStorage.setItem("auth", JSON.stringify(data));
       document.cookie = `token=${data.token}`;
@@ -74,6 +75,7 @@ const Login = () => {
 
       <div className="row">
         <div className="col">
+          <p className="text-center">
           <p className="text-center">
             <Link className="text-danger" href="/forgot-password">
               Forgot Password
