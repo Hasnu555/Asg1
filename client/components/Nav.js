@@ -79,6 +79,20 @@ const Nav = () => {
             Edit Profile
           </Link>
           </li>
+          
+          {/* Link for groups page */}
+          <li>
+                <Link
+                  href="/group/groups"
+                  className={`nav-link dropdown-item ${
+                    current === "/group/groups" && "active"
+                  }`}
+                >
+                  Groups
+                </Link>
+          </li>
+          
+          
           <li>
           <a
             onClick={logout}
