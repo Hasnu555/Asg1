@@ -18,14 +18,30 @@ const DashboardContent = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetchUserPost();
-    getSuggestedFriends();
-  }, [state, router]);
+    if (state && state.token) {
+      fetchUserPost();
+      getSuggestedFriends();
+    }
+  }, [state && state.token]);
 
   const fetchUserPost = async () => {
     try {
       const { data } = await axios.get("http://localhost:5000/social");
-      setPosts(data);
+      const transformedPosts = data.map((post) => ({
+        ...post,
+        postedBy: post.author,
+        authorimage: post.author.imageUrl,
+        like: post.likes.map((user) => user._id),
+        comments: post.comments.map((comment) => ({
+          _id: comment._id,
+          text: comment.content,
+          created: comment.createdAt,
+          postedBy: comment.author.name,
+          posterimage: comment.author.imageUrl,
+        })),
+        imageUrl: `file:///${post.imageUrl}`,
+      }));
+      setPosts(transformedPosts);
     } catch (error) {
       console.log("ERROR while post-fetching Client => ", error);
     }
@@ -71,6 +87,10 @@ const DashboardContent = () => {
     }
   };
 
+  const handleFollow = async (user) => {
+    await sendFriendRequest(user._id);
+  };
+
   const getSuggestedFriends = async () => {
     try {
       const { data } = await axios.get(
@@ -82,9 +102,11 @@ const DashboardContent = () => {
     }
   };
 
-  const handleFollow = async (user) => {
+  const sendFriendRequest = async (recipientId) => {
     try {
-      await axios.post(`http://localhost:5000/send-friend-request/${user._id}`);
+      await axios.post(
+        `http://localhost:5000/send-friend-request/${recipientId}`
+      );
       toast.success("Friend request sent successfully");
       getSuggestedFriends();
     } catch (error) {
@@ -94,7 +116,7 @@ const DashboardContent = () => {
   };
 
   return (
-    <div className="container-fluid dashboard-content">
+    <div className="container-fluid">
       <div className="row py-3">
         <div className="col-md-8">
           <CreatePostForm
