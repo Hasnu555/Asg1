@@ -45,7 +45,10 @@ const groupController = {
 
   listGroups: async (req, res) => {
     try {
-      const groups = await Group.find({ members: { $in: [req.user.id] } });
+      const userId = req.user.id;
+      const groups = await Group.find({
+        $or: [{ members: userId }, { admin: userId }],
+      });
       res.status(200).json(groups);
     } catch (err) {
       console.error(err);
@@ -126,9 +129,9 @@ const groupController = {
 
     try {
       const groupPost = new GroupPost({
-        groupId,
         content,
         image,
+        group: groupId,
         postedBy: userId,
       });
       await groupPost.save();

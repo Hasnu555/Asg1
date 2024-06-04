@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { UserContext } from "../../context";
+import GroupPostForm from "../../components/GroupPostForm";
 
 const Groups = () => {
   const [state] = useContext(UserContext);
@@ -14,10 +15,12 @@ const Groups = () => {
 
   const fetchGroups = async () => {
     try {
-      const { data } = await axios.get("/api/groups/myGroups", {
-        headers: {
-          Authorization: `Bearer ${state.token}`,
-        },
+      const headers = {
+        Authorization: `Bearer ${state.token}`,
+      };
+      console.log("Headers: ", headers); // Debug line to print headers
+      const { data } = await axios.get("http://localhost:5000/group/myGroups", {
+        headers,
       });
       setYourGroups(data.yourGroups || []);
       setAllGroups(data.allGroups || []);
@@ -31,7 +34,7 @@ const Groups = () => {
       <h1 className="text-light">Your Groups</h1>
       <div className="list-group mt-4">
         {yourGroups.map((group) => (
-          <Link key={group._id} href={`/groups/${group._id}`} legacyBehavior>
+          <Link key={group._id} href={`/group/${group._id}`} legacyBehavior>
             <a className="list-group-item list-group-item-action bg-dark text-light">
               <img
                 src={group.image}

@@ -24,13 +24,13 @@ const CreateGroup = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/groups",
+        "http://localhost:5000/group/create",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      router.push(`/groups/${data._id}`);
+      router.push(`/group/${data._id}`);
     } catch (error) {
       console.error("Error creating group:", error);
     }

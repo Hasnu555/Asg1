@@ -7,7 +7,7 @@ import GroupPostForm from "../../components/GroupPostForm";
 const GroupPage = () => {
   const [state] = useContext(UserContext);
   const router = useRouter();
-  const { groupId } = router.query;
+  const { id: groupId } = router.query; // Correctly destructure groupId
   const [group, setGroup] = useState({});
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
@@ -23,11 +23,16 @@ const GroupPage = () => {
 
   const fetchGroup = async () => {
     try {
-      const { data } = await axios.get(`/api/groups/${groupId}`, {
-        headers: {
-          Authorization: `Bearer ${state.token}`,
-        },
-      });
+      console.log(`Fetching group with ID: ${groupId}`);
+      const { data } = await axios.get(
+        `http://localhost:5000/group/${groupId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${state.token}`,
+          },
+        }
+      );
+      console.log("Group data:", data);
       setGroup(data);
     } catch (error) {
       console.error("Error fetching group:", error);
@@ -36,11 +41,16 @@ const GroupPage = () => {
 
   const fetchPosts = async () => {
     try {
-      const { data } = await axios.get(`/api/groups/${groupId}/posts`, {
-        headers: {
-          Authorization: `Bearer ${state.token}`,
-        },
-      });
+      console.log(`Fetching posts for group ID: ${groupId}`);
+      const { data } = await axios.get(
+        `http://localhost:5000/group/${groupId}/posts`,
+        {
+          headers: {
+            Authorization: `Bearer ${state.token}`,
+          },
+        }
+      );
+      console.log("Posts data:", data);
       setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -50,6 +60,7 @@ const GroupPage = () => {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
+    console.log("Submitting post...");
 
     const formData = new FormData();
     formData.append("content", content);
@@ -57,7 +68,7 @@ const GroupPage = () => {
 
     try {
       const { data } = await axios.post(
-        `/api/groups/${groupId}/post`,
+        `http://localhost:5000/group/${groupId}/post`, // Fixed URL
         formData,
         {
           headers: {
@@ -66,6 +77,7 @@ const GroupPage = () => {
           },
         }
       );
+      console.log("Post created:", data);
       setPosts([data.post, ...posts]);
       setContent("");
       setImage(null);
