@@ -1,33 +1,48 @@
 import { Avatar } from "antd";
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false }); // dynamic import
-// import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { CameraOutlined, LoadingOutlined } from '@ant-design/icons'
+import { CameraOutlined, LoadingOutlined } from "@ant-design/icons";
 
-
-
-const CreatePostForm = ({ content, setContent, postSubmit, handleImage, image, uploading }) => {
+const CreatePostForm = ({
+  content,
+  setContent,
+  postSubmit,
+  handleImage,
+  image,
+  uploading,
+}) => {
   return (
-    <div className="card">
+    <div className="card create-post-form">
       <div className="card-body pb-3">
         <form className="form-group">
           <ReactQuill
             theme="snow"
             value={content}
             onChange={(e) => setContent(e)}
-            className="form-control"
+            className="form-control quill-editor"
             placeholder="Write something"
           />
-          <input onChange={handleImage} type="file" accept="image/*" hidden id="file-upload"/>
-          <label htmlFor="file-upload" className="btn btn-outline-secondary btn-sm mt-2" style={{backgroundColor: 'blue', color: 'white'}}>
+          <input
+            onChange={handleImage}
+            type="file"
+            accept="image/*"
+            hidden
+            id="file-upload"
+          />
+          <label
+            htmlFor="file-upload"
+            className="btn btn-outline-secondary btn-sm mt-2 file-upload-label"
+          >
             {uploading ? <LoadingOutlined /> : <CameraOutlined />}
-            
           </label>
         </form>
       </div>
       <div className="card-footer d-flex justify-content-between text-muted">
-        <button onClick={postSubmit} className="btn btn-primary mt-1 btn-sm">
+        <button
+          onClick={postSubmit}
+          className="btn btn-primary mt-1 btn-sm post-button"
+        >
           Post
         </button>
       </div>

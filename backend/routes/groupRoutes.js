@@ -80,4 +80,10 @@ router.delete(
   groupController.unlikeGroupPost
 );
 
+// Route to get details of a specific group
+router.get("/group/:groupId", requireAuth, groupController.getGroupDetails);
+
+// Route to get posts of a specific group
+router.get("/group/:groupId/posts", requireAuth, groupController.getGroupPosts);
+
 module.exports = router;
