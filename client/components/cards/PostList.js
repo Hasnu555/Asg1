@@ -4,7 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import moment from "moment";
-import { Avatar, Tooltip, Button } from "antd";
+import { Avatar, Tooltip, Button, Card, List, Input, Form } from "antd";
 import {
   HeartOutlined,
   CommentOutlined,
@@ -85,42 +85,55 @@ const PostList = ({ posts, fetchUserPost }) => {
   };
 
   return (
-    <>
-      {posts.map((post) => (
-        <div key={post._id} className="card mb-5">
-          <div className="card-header">
-            <Avatar src={post.authorimage} className="avatar" />
-            {post.postedBy && <strong>{post.postedBy.name}</strong>}
-            <span className="pt-2 mx-3">
-              {moment(post.createdAt).fromNow()}
-            </span>
-          </div>
-          <div className="card-body">
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-            {post.imageBase64 && (
-              <Image
-                src={post.imageBase64}
-                width={20}
-                height={20}
-                alt="post image"
-                style={{ width: "100%", height: "auto" }}
-              />
-            )}
-          </div>
-          <div className="card-footer">
-            <LikeOutlined
+    <List
+      itemLayout="vertical"
+      dataSource={posts}
+      renderItem={(post) => (
+        <Card
+          key={post._id}
+          className="mb-4"
+          style={{ backgroundColor: "#1f1b24", color: "#ffffff" }}
+        >
+          <Card.Meta
+            avatar={<Avatar src={post.authorimage} />}
+            title={
+              <div>
+                <strong>{post.postedBy && post.postedBy.name}</strong>
+                <span className="text-muted mx-3">
+                  {moment(post.createdAt).fromNow()}
+                </span>
+              </div>
+            }
+            description={
+              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            }
+          />
+          {post.imageBase64 && (
+            <Image
+              src={post.imageBase64}
+              width={20}
+              height={20}
+              alt="post image"
+              style={{ width: "100%", height: "auto", marginTop: "10px" }}
+            />
+          )}
+          <div className="mt-3">
+            <Button
+              type="text"
+              icon={<LikeOutlined />}
+              className="text-danger"
               onClick={() => handleLike(post._id)}
-              className="text-danger pt-2 h5 px-2"
-            />
-            <DislikeOutlined
-              onClick={() => handleUnlike(post._id)}
-              className="text-danger pt-2 h5 px-2"
-            />
-            <span className="pt-2">
+            >
               {post.like ? post.like.length : 0} Likes
-            </span>
+            </Button>
+            <Button
+              type="text"
+              icon={<DislikeOutlined />}
+              className="text-danger"
+              onClick={() => handleUnlike(post._id)}
+            />
             <Button type="link" onClick={() => toggleComments(post._id)}>
-              <CommentOutlined className="text-danger pt-2 h5 px-2 mx-3" />
+              <CommentOutlined className="text-danger" />
               {visibleComments[post._id] ? <UpOutlined /> : <DownOutlined />}
             </Button>
           </div>
@@ -145,29 +158,33 @@ const PostList = ({ posts, fetchUserPost }) => {
                     {index !== post.comments.length - 1 && <hr />}
                   </div>
                 ))}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
+              <Form
+                onFinish={() => {
                   handleComment(post._id, commentContent);
                   setCommentContent("");
                 }}
               >
-                <input
-                  type="text"
-                  value={commentContent}
-                  onChange={(e) => setCommentContent(e.target.value)}
-                  placeholder="Write a comment..."
-                  className="comment-input"
-                />
-                <Button type="primary" htmlType="submit">
-                  Comment
-                </Button>
-              </form>
+                <Form.Item>
+                  <Input
+                    type="text"
+                    value={commentContent}
+                    onChange={(e) => setCommentContent(e.target.value)}
+                    placeholder="Write a comment..."
+                    className="comment-input"
+                    style={{ marginBottom: "10px" }}
+                  />
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Comment
+                  </Button>
+                </Form.Item>
+              </Form>
             </div>
           )}
-        </div>
-      ))}
-    </>
+        </Card>
+      )}
+    />
   );
 };
 

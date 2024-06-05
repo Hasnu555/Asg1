@@ -3,11 +3,13 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../context";
 import GroupPostForm from "../../components/GroupPostForm";
+import { List, Button, Card, Avatar } from "antd";
+import { LikeOutlined, LikeFilled, UserOutlined } from "@ant-design/icons";
 
 const GroupPage = () => {
   const [state] = useContext(UserContext);
   const router = useRouter();
-  const { id: groupId } = router.query; // Correctly destructure groupId
+  const { id: groupId } = router.query;
   const [group, setGroup] = useState({});
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
@@ -23,7 +25,6 @@ const GroupPage = () => {
 
   const fetchGroup = async () => {
     try {
-      console.log(`Fetching group with ID: ${groupId}`);
       const { data } = await axios.get(
         `http://localhost:5000/group/${groupId}`,
         {
@@ -32,7 +33,6 @@ const GroupPage = () => {
           },
         }
       );
-      console.log("Group data:", data);
       setGroup(data);
     } catch (error) {
       console.error("Error fetching group:", error);
@@ -41,7 +41,6 @@ const GroupPage = () => {
 
   const fetchPosts = async () => {
     try {
-      console.log(`Fetching posts for group ID: ${groupId}`);
       const { data } = await axios.get(
         `http://localhost:5000/group/${groupId}/posts`,
         {
@@ -50,17 +49,14 @@ const GroupPage = () => {
           },
         }
       );
-      console.log("Posts data:", data);
       setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
 
-  const handlePostSubmit = async (e) => {
-    e.preventDefault();
+  const handlePostSubmit = async () => {
     setUploading(true);
-    console.log("Submitting post...");
 
     const formData = new FormData();
     formData.append("content", content);
@@ -68,7 +64,7 @@ const GroupPage = () => {
 
     try {
       const { data } = await axios.post(
-        `http://localhost:5000/group/${groupId}/post`, // Fixed URL
+        `http://localhost:5000/group/${groupId}/post`,
         formData,
         {
           headers: {
@@ -77,7 +73,6 @@ const GroupPage = () => {
           },
         }
       );
-      console.log("Post created:", data);
       setPosts([data.post, ...posts]);
       setContent("");
       setImage(null);
@@ -88,34 +83,90 @@ const GroupPage = () => {
     }
   };
 
+  const handleLikePost = async (postId) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/group/post/${postId}/like`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${state.token}`,
+          },
+        }
+      );
+      fetchPosts(); // Refresh posts to reflect the like
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
   return (
     <div className="container mt-5">
-      <h1 className="text-light">{group.name}</h1>
-      <p className="text-light">{group.description}</p>
+      <Card
+        title={<h1 className="text-light">{group.name}</h1>}
+        bordered={false}
+        style={{ backgroundColor: "#1f1b24", color: "#ffffff" }}
+      >
+        <p className="text-light">{group.description}</p>
+      </Card>
 
       <GroupPostForm
         content={content}
         setContent={setContent}
         postSubmit={handlePostSubmit}
-        handleImage={(e) => setImage(e.target.files[0])}
+        handleImage={(file) => {
+          setImage(file);
+          return false;
+        }}
         uploading={uploading}
         image={image}
       />
 
-      <div className="list-group mt-4">
-        {posts.map((post) => (
-          <div key={post._id} className="list-group-item bg-dark text-light">
-            <p>{post.content}</p>
-            {post.image && (
-              <img
-                src={post.image}
-                alt={post.content}
-                className="img-thumbnail"
-              />
-            )}
-          </div>
-        ))}
-      </div>
+      <List
+        itemLayout="vertical"
+        dataSource={posts}
+        renderItem={(post) => (
+          <Card
+            style={{
+              backgroundColor: "#1f1b24",
+              color: "#ffffff",
+              marginTop: "20px",
+            }}
+            key={post._id}
+            actions={[
+              <Button
+                icon={
+                  post.likes.includes(state.user._id) ? (
+                    <LikeFilled />
+                  ) : (
+                    <LikeOutlined />
+                  )
+                }
+                onClick={() => handleLikePost(post._id)}
+                type="text"
+                style={{ color: "#ffffff" }}
+              >
+                {post.likes.length}
+              </Button>,
+            ]}
+          >
+            <Card.Meta
+              avatar={<Avatar icon={<UserOutlined />} />}
+              title={<span style={{ color: "#ffffff" }}>{post.content}</span>}
+              description={
+                post.image && (
+                  <img
+                    src={post.image}
+                    alt={post.content}
+                    className="img-thumbnail"
+                  />
+                )
+              }
+            />
+          </Card>
+        )}
+        className="group-post-list"
+      />
     </div>
   );
 };

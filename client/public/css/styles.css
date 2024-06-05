@@ -139,7 +139,7 @@ body {
 /* Create Post Form styles */
 .create-post-form {
     background-color: #1f1b24;
-    border: none;
+    border: 1px solid #282828;
     border-radius: 10px;
 }
 
@@ -156,6 +156,203 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.create-post-form .file-upload-label:hover {
+    background-color: #bb86fc;
+}
+
+.create-post-form .post-button {
+    background: linear-gradient(45deg, #d8bfd8, #dda0dd);
+    border: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.create-post-form .post-button:hover {
+    background: linear-gradient(45deg, #dda0dd, #d8bfd8);
+}
+
+/* Group Page styles */
+.group-page .list-group-item {
+    background-color: #1f1b24;
+    color: #ffffff;
+    border: 1px solid #282828;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.group-page .list-group-item img {
+    border-radius: 50%;
+}
+
+/* Group List styles */
+.group-list .list-group-item {
+    background-color: #1f1b24;
+    color: #ffffff;
+    border: 1px solid #282828;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.group-list .list-group-item:hover {
+    background-color: #2c2c2c;
+}
+
+/* Group Post List styles */
+.group-post-list .list-group-item {
+    background-color: #1f1b24;
+    color: #ffffff;
+    border: 1px solid #282828;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.group-post-list .list-group-item img {
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* General styles */
+.bg-default-image {
+    background-size: 100%;
+    height: 150px;
+    text-shadow: 2px 2px 8px #000;
+}
+
+.logo {
+    text-shadow: 2px 2px rgb(91, 10, 91);
+    width: auto;
+}
+
+.active {
+    background-color: rgb(91, 10, 91);
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.text-danger {
+    color: #ff6b6b !important;
+}
+
+.auth-container {
+    padding: 0 20px;
+}
+
+.auth-row {
+    margin: 0;
+}
+
+.auth-col {
+    padding: 0 10px;
+}
+
+.auth-form {
+    background-color: #1f1b24;
+    border: 1px solid #282828;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.auth-form input,
+.auth-form textarea {
+    background-color: #2c2c2c;
+    border: 1px solid #3a3a3a;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.auth-form label {
+    color: #ffffff;
+}
+
+.auth-form button {
+    background: linear-gradient(45deg, #d8bfd8, #dda0dd);
+    border: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.auth-form button:hover {
+    background: linear-gradient(45deg, #dda0dd, #d8bfd8);
+}
+
+.dashboard-content .card {
+    background-color: #1f1b24;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.dashboard-content .card-header {
+    background-color: #1f1b24;
+    border-bottom: 1px solid #282828;
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-content .card-body {
+    background-color: #1f1b24;
+    color: #ffffff;
+}
+
+.dashboard-content .card-footer {
+    background-color: #1f1b24;
+    border-top: 1px solid #282828;
+}
+
+.dashboard-content .avatar {
+    margin-right: 10px;
+}
+
+.dashboard-content .comment-input {
+    width: 80%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2c2c2c;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+/* Create Post Form styles */
+.create-post-form {
+    background-color: #1f1b24;
+    border: 1px solid #282828;
+    border-radius: 10px;
+}
+
+.create-post-form .quill-editor {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    border: 1px solid #3a3a3a;
+    border-radius: 5px;
+}
+
+.create-post-form .file-upload-label {
+    background-color: #3700b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 .create-post-form .file-upload-label:hover {

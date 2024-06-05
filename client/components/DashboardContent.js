@@ -7,6 +7,10 @@ import { toast } from "react-toastify";
 import PostList from "./cards/PostList";
 import People from "./cards/People";
 import SearchBar from "./SearchBar"; // Import the SearchBar component
+import { Col, Row, Button, Typography } from "antd";
+import Link from "next/link";
+
+const { Title } = Typography;
 
 const DashboardContent = () => {
   const [state] = useContext(UserContext);
@@ -117,8 +121,8 @@ const DashboardContent = () => {
 
   return (
     <div className="container-fluid">
-      <div className="row py-3">
-        <div className="col-md-8">
+      <Row className="py-3" gutter={[16, 16]}>
+        <Col xs={24} md={16}>
           <CreatePostForm
             content={content}
             setContent={setContent}
@@ -128,17 +132,19 @@ const DashboardContent = () => {
             uploading={uploading}
           />
           <PostList posts={posts} fetchUserPost={fetchUserPost} />
-        </div>
-        <div className="col-md-4">
+        </Col>
+        <Col xs={24} md={8}>
           <SearchBar setSearchResults={setPeople} />
           {state && state.user && state.user.following && (
-            <Link href={`/user/following`} className="h6 text-decoration-none">
-              {state.user.following.length} Following
+            <Link href={`/user/following`}>
+              <Button type="link" className="h6 text-decoration-none">
+                {state.user.following.length} Following
+              </Button>
             </Link>
           )}
           <People people={people} handleFollow={handleFollow} />
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   );
 };

@@ -40,7 +40,7 @@ const Nav = () => {
       <div className="d-flex align-items-center">
         <a
           className="nav-link text-light"
-          onClick={() => handleNavigation("/Groups/index")}
+          onClick={() => handleNavigation("/Groups")}
         >
           <Avatar src={"/images/group.png"} className="logo" />
         </a>

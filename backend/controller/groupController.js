@@ -202,6 +202,35 @@ const groupController = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
+  getGroupDetails: async (req, res) => {
+    const { groupId } = req.params;
+    try {
+      const group = await Group.findById(groupId)
+        .populate("admin", "name")
+        .populate("members", "name");
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      res.status(200).json(group);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+
+  getGroupPosts: async (req, res) => {
+    const { groupId } = req.params;
+    try {
+      const posts = await GroupPost.find({ group: groupId }).populate(
+        "postedBy",
+        "name"
+      );
+      res.status(200).json(posts);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
 };
 
 module.exports = groupController;
