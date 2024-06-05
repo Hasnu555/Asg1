@@ -92,39 +92,39 @@ const People = ({ people, handleFollow }) => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="people-list-container">
       <List
         itemLayout="horizontal"
         dataSource={people}
         renderItem={(person) => (
           <List.Item
             actions={[
-              <Button type="primary" onClick={() => handleFollow(person)}>
+              <Button
+                className="send-request-button"
+                onClick={() => handleFollow(person)}
+              >
                 Send Request
               </Button>,
-              <Button type="default" onClick={() => showMessageModal(person)}>
+              <Button
+                className="send-message-button"
+                onClick={() => showMessageModal(person)}
+              >
                 Send Message
               </Button>,
             ]}
-            style={{
-              backgroundColor: "#1f1b24",
-              borderRadius: "5px",
-              marginBottom: "10px",
-              padding: "10px",
-              color: "#ffffff",
-            }}
+            className="people-list-item"
           >
             <List.Item.Meta
               avatar={
                 <Avatar
                   size={50}
                   src={person.imageBase64}
-                  style={{ cursor: "pointer" }}
+                  className="people-avatar"
                 />
               }
               title={
                 <Link href={`/friend-profile/${person._id}`}>
-                  <Text style={{ color: "#bb86fc" }}>{person.name}</Text>
+                  <Text className="people-name">{person.name}</Text>
                 </Link>
               }
             />
@@ -140,28 +140,24 @@ const People = ({ people, handleFollow }) => {
           <Button key="back" onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            className="send-message-button"
+          >
             Send
           </Button>,
         ]}
       >
-        <div
-          style={{
-            marginBottom: "10px",
-            maxHeight: "200px",
-            overflowY: "scroll",
-            backgroundColor: "#2c2c2c",
-            padding: "10px",
-            borderRadius: "5px",
-          }}
-        >
+        <div className="chat-history">
           {chatHistory.map((chat, index) => (
-            <div key={index} style={{ padding: "5px 0", color: "#ffffff" }}>
+            <div key={index} className="chat-message">
               <strong>
                 {chat.sender === state.user ? "You" : selectedPerson.name}:
               </strong>{" "}
               {chat.message}
-              <div style={{ fontSize: "12px", color: "#888" }}>
+              <div className="chat-timestamp">
                 {new Date(chat.createdAt).toLocaleString()}
               </div>
             </div>
@@ -172,12 +168,7 @@ const People = ({ people, handleFollow }) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message here..."
-          style={{
-            backgroundColor: "#2c2c2c",
-            color: "#ffffff",
-            borderRadius: "5px",
-            border: "1px solid #3a3a3a",
-          }}
+          className="message-input"
         />
       </Modal>
     </div>

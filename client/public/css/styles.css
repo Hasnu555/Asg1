@@ -387,3 +387,120 @@ body {
 .group-page .list-group-item img {
     border-radius: 50%;
 }
+
+/* MyPostList styles */
+.post-list .card {
+    background-color: #1f1b24;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.post-list .card-header {
+    background-color: #1f1b24;
+    border-bottom: 1px solid #282828;
+    display: flex;
+    align-items: center;
+}
+
+.post-list .card-body {
+    background-color: #1f1b24;
+    color: #ffffff;
+}
+
+.post-list .card-footer {
+    background-color: #1f1b24;
+    border-top: 1px solid #282828;
+}
+
+.post-list .avatar {
+    margin-right: 10px;
+}
+
+.post-list .comment-input {
+    width: 80%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2c2c2c;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+/* New styles for People component */
+.people-list-container {
+    padding: 20px;
+}
+
+.people-list-item {
+    background-color: #1f1b24;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+    color: #ffffff;
+}
+
+.people-avatar {
+    cursor: pointer;
+}
+
+.people-name {
+    color: #bb86fc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    /* Adjust based on the screen size */
+}
+
+.chat-history {
+    margin-bottom: 10px;
+    max-height: 200px;
+    overflow-y: scroll;
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.chat-message {
+    padding: 5px 0;
+    color: #ffffff;
+}
+
+.chat-timestamp {
+    font-size: 12px;
+    color: #888;
+}
+
+.message-input {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #3a3a3a;
+}
+
+.send-request-button {
+    background-color: #ff69b4;
+    /* Pink color */
+    border: none;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.send-request-button:hover {
+    background-color: #ff85c0;
+}
+
+.send-message-button {
+    background: linear-gradient(45deg, #d8bfd8, #dda0dd);
+    border: none;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.send-message-button:hover {
+    background: linear-gradient(45deg, #dda0dd, #d8bfd8);
+}
